@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".NextActivity"></activity>
+        <activity android:name=".PriceActivity"></activity>aashishsingh2k
     </application>
 
 </manifest>
