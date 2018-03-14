@@ -7,8 +7,8 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:label= "transportation app"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -24,6 +24,33 @@
         </activity>
         <activity android:name=".NextActivity"></activity>
         <activity android:name=".PriceActivity"></activity>aashishsingh2k
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <!--
+             The API key for Google Maps-based APIs.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBG57qk1lkvewRUfAp2nrTtECZJfWzstRk" />
+        <!--AIzaSyDZdc-eHMXyI4dFkHX_UWtEzmxtrxgtsJk-->
+        <!-- AIzaSyBG57qk1lkvewRUfAp2nrTtECZJfWzstRk-->
+        <activity
+            android:name=".MapsMarkerActivity"
+            >
+        </activity>
+        <activity
+            android:name=".MapsActivityCurrentPlace"
+            >
+            ></activity>
+        <activity android:name=".nextMapActivity"></activity>
+        <activity
+            android:name=".MapsMarkerActivity2"
+            >
+        </activity>
+        <activity android:name=".nextnextMapActivity"></activity>
     </application>
 
 </manifest>

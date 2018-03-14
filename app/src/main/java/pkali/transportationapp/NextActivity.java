@@ -2,44 +2,18 @@ package pkali.transportationapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.os.Bundle;import android.support.v7.app.AppCompatActivity;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.content.Context;
 
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobile.auth.core.IdentityHandler;
-import com.amazonaws.mobile.auth.core.IdentityManager;
-import com.amazonaws.mobile.auth.core.IdentityProvider;
-import com.amazonaws.mobile.auth.ui.SignInUI;
-import com.amazonaws.mobile.auth.userpools.CognitoUserPoolsSignInProvider;
-import com.amazonaws.mobile.auth.userpools.SignUpActivity;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.AmazonWebServiceClient;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
-import com.amazonaws.mobileconnectors.dynamodbv2.document.Table;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedList;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
-import com.google.gson.Gson;
-
-
-
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.amazonaws.auth.policy.Principal.WebIdentityProviders.Amazon;
 
 /**
  * Created by aashishsingh on 2/17/18.
@@ -99,6 +73,11 @@ public class NextActivity extends AppCompatActivity {
 
     }
 
+    public void OnClickEnterSrcMapButton(View view){
+        Intent i = new Intent(this, MapsMarkerActivity.class);
+        startActivity(i);
+    }
+
     public void onClickQuery(View view) {
         Log.v("ONCLICKQUERY: ", "CLICKED QUERY BUTTON");
         AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AWSMobileClient.getInstance().getCredentialsProvider());
@@ -134,5 +113,10 @@ public class NextActivity extends AppCompatActivity {
 
     private static void getName(DynamoDBMapper mapper, int id) throws Exception {
         Log.v("Query Method", "getName");
+    }
+
+    public void OnClickGpsButton(View view) {
+        Intent i = new Intent(this, MapsActivityCurrentPlace.class);
+        startActivity(i);
     }
 }

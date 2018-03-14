@@ -1,10 +1,12 @@
 package pkali.transportationapp;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 
 import com.lyft.lyftbutton.LyftButton;
 import com.lyft.lyftbutton.RideParams;
@@ -32,12 +34,20 @@ public class PriceActivity extends AppCompatActivity {
                 .setClientToken("mPXtV/bLryJfivrfsmvE7XrADmIXfmUj9Fm+hBLIMfDOexXRL6Y6VqMnIEhYF17oTrajzeLU6swgDBroJxZ5i/SXdWdSg8HjMxIKFETz7tV9UWYv4zEHeJw=")
                 .build();
 
+        Intent i = getIntent();
+        Double LatSrc = i.getDoubleExtra("LatSrc", 1);
+        Double LonSrc = i.getDoubleExtra("LonSrc", 1);
+        Double LatDest = i.getDoubleExtra("LatDest", 1);
+        Double LonDest = i.getDoubleExtra("LonDest", 1);
+        String src = i.getStringExtra("current src");
+        String dest = i.getStringExtra("current dest");
+
         LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button);
         lyftButton.setApiConfig(apiConfig);
 
         RideParams.Builder rideParamsBuilder = new RideParams.Builder()
-                .setPickupLocation(37.7766048, -122.3943629) //4th st SF
-                .setDropoffLocation(37.759234, -121.4135125); //2900 N MacArthur Dr, Tracy, CA 95376
+                .setPickupLocation(LatSrc, LonSrc) //4th st SF
+                .setDropoffLocation(LatDest, LonDest); //2900 N MacArthur Dr, Tracy, CA 95376
         rideParamsBuilder.setRideTypeEnum(RideTypeEnum.CLASSIC);
 
         lyftButton.setRideParams(rideParamsBuilder.build());
@@ -67,9 +77,9 @@ public class PriceActivity extends AppCompatActivity {
                 .setProductId("a1111c8c-c720-46c3-8534-2fcdd730040d")
                 // Required for price estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of dropoff location
                 .setDropoffLocation(
-                        37.775304, -122.417522, "Uber HQ", "1455 Market Street, San Francisco")
+                        LatDest, LonDest, dest, dest)
                 // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
-                .setPickupLocation(37.778304, -122.418620, "SF symphony", "201 VanNess Ave, SF, CA")
+                .setPickupLocation(LatSrc, LonSrc, src, src)
                 .build();
         // set parameters for the RideRequestButton instance
         requestButton.setRideParameters(rideParams);
@@ -78,6 +88,9 @@ public class PriceActivity extends AppCompatActivity {
         requestButton.setSession(session);
 
         requestButton.loadRideInformation();
+
+        TextView tv = (TextView) findViewById(R.id.src_dest_text);
+        tv.setText("Source address: " + src + "; Destination Address: " + dest);
     }
 
     public void OnClickBack(View view) {

@@ -33,21 +33,11 @@
         app:layout_constraintTop_toBottomOf="@+id/lyft_button" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginStart="6dp"
-        android:text="Lyft from 4th street San Francisco CA to 2900 N MacArthur Dr, Tracy, CA 95376"
-        app:layout_constraintBottom_toTopOf="@+id/lyft_button"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/src_dest_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="67dp"
-        android:text="Uber from 1455 Market St San Francisco CA to 201 VanNess Ave, San Francisco, CA"
+        android:text="src dest"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
