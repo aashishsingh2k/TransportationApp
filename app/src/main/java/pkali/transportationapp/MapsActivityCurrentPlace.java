@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -54,6 +55,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private Marker m = null;
     private boolean flag = false;
     private String firstAdd = "Resolving";
+    private boolean allowDest = false;
+    private int counter = 0;
+    private String tgtAdd = "tgt address not yet entered!";
+    private Double latSrc = 1.0;
+    private Double lonSrc = 1.0;
 
     // The entry points to the Places API.
     private GeoDataClient mGeoDataClient;
@@ -144,9 +150,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.option_get_place) {
+        /*if (item.getItemId() == R.id.option_get_place) {
             showCurrentPlace();
-        }
+        }*/
+        showCurrentPlace();
         return true;
     }
 
@@ -186,12 +193,14 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         // Prompt the user for permission.
         getLocationPermission();
+        showCurrentPlace();
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+
 
     }
 
@@ -217,6 +226,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -316,6 +326,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                                         mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
                                         if(i == 0) {
                                             firstAdd = mLikelyPlaceNames[0];
+                                            currAdd = mLikelyPlaceNames[0];
+                                            TextView tv = (TextView) findViewById(R.id.source_text);
+                                            tv.setText(currAdd);
                                         }
                                         mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace()
                                                 .getAddress();
@@ -342,7 +355,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
                                 // Show a dialog offering the user the list of likely places, and add a
                                 // marker at the selected place.
-                                openPlacesDialog();
+                                //openPlacesDialog();
+                                setMarkerAtCurrentPlace();
 
 
                             } else {
@@ -405,6 +419,34 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 .show();
     }
 
+    private void setMarkerAtCurrentPlace() {
+                // The "which" argument contains the position of the selected item.
+
+                LatLng markerLatLng = mLikelyPlaceLatLngs[0];
+                String markerSnippet = mLikelyPlaceAddresses[0];
+                if (mLikelyPlaceAttributions[0] != null) {
+                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[0];
+                }
+
+                // Add a marker for the selected place, with an info window
+                // showing information about that place.
+        if(counter == 0) {
+            m = mMap.addMarker(new MarkerOptions()
+                    .title(mLikelyPlaceNames[0])
+                    .position(markerLatLng)
+                    .snippet(markerSnippet).draggable(true));
+        }
+        counter++;
+                currAdd = mLikelyPlaceNames[0];
+                dragHelper();
+                // Position the map's camera at the location of the marker.
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
+                        DEFAULT_ZOOM));
+
+    }
+
+
+
     public void dragHelper() {
         geocoder = new Geocoder(this, Locale.getDefault());
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
@@ -442,10 +484,20 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     currAdd = add;
                 }
 
+                TextView tv = (TextView) findViewById(R.id.source_text);
+                TextView tv1 = (TextView) findViewById(R.id.destination_text);
+                if(!allowDest) {
+                    tv.setText(currAdd);
+                    firstAdd = currAdd;
+                    latSrc = m.getPosition().latitude;
+                    lonSrc = m.getPosition().longitude;
+                }
+                else {
+                    tv1.setText(currAdd);
+                    tgtAdd = currAdd;
+                }
                 marker.setTitle(currAdd);
                 marker.showInfoWindow();
-                //mMap.addMarker(new MarkerOptions().position(currPos)
-                // .title(currAdd).draggable(true));
 
             }
         });
@@ -454,17 +506,37 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             @Override
             public void onInfoWindowClick(Marker marker) {
                 marker = m;
-                helper();
+                helper1();
             }
         });
     }
 
-    public void helper() {
+    /*public void helper(View view) {
         Intent i = new Intent(this, nextMapActivity.class);
         i.putExtra("current address", currAdd);
         i.putExtra("lat", m.getPosition().latitude);
         i.putExtra("lon", m.getPosition().longitude);
         startActivity(i);
+    }*/
+
+    public void helper1() {
+        Intent i = new Intent(this, nextMapActivity.class);
+        i.putExtra("current address", currAdd);
+        i.putExtra("lat", m.getPosition().latitude);
+        i.putExtra("lon", m.getPosition().longitude);
+        startActivity(i);
+    }
+
+    public void onClickConfirmSource(View view) {
+        Button b = (Button) findViewById(R.id.confirm_source);
+        Button bDest = (Button) findViewById(R.id.confirm_destination);
+        b.setVisibility(View.INVISIBLE);
+        TextView tv1 = (TextView) findViewById(R.id.enter_dest_text_view);
+        tv1.setVisibility(View.VISIBLE);
+        TextView tv2 = (TextView) findViewById(R.id.destination_text);
+        tv2.setVisibility(View.VISIBLE);
+        bDest.setVisibility(View.VISIBLE);
+        allowDest = true;
     }
 
     /**
@@ -487,5 +559,15 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
+    }
+
+    public void OnClickConfirmDestination(View view) {
+        Intent i = new Intent(this, PriceActivity.class);
+        i.putExtra("current src", firstAdd);
+        i.putExtra("current dest", tgtAdd);
+        i.putExtra("LatDest", m.getPosition().latitude);
+        i.putExtra("LonDest", m.getPosition().longitude);
+        i.putExtra("LatSrc",latSrc);
+        i.putExtra("LonSrc", lonSrc);
     }
 }
