@@ -60,6 +60,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private String tgtAdd = "tgt address not yet entered!";
     private Double latSrc = 1.0;
     private Double lonSrc = 1.0;
+    private Double latDest = 1.0;
+    private Double lonDest = 1.0;
 
     // The entry points to the Places API.
     private GeoDataClient mGeoDataClient;
@@ -327,6 +329,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                                         if(i == 0) {
                                             firstAdd = mLikelyPlaceNames[0];
                                             currAdd = mLikelyPlaceNames[0];
+
                                             TextView tv = (TextView) findViewById(R.id.source_text);
                                             tv.setText(currAdd);
                                         }
@@ -435,6 +438,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     .title(mLikelyPlaceNames[0])
                     .position(markerLatLng)
                     .snippet(markerSnippet).draggable(true));
+            latSrc = m.getPosition().latitude;
+            lonSrc = m.getPosition().longitude;
         }
         counter++;
                 currAdd = mLikelyPlaceNames[0];
@@ -495,6 +500,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 else {
                     tv1.setText(currAdd);
                     tgtAdd = currAdd;
+                    latDest = m.getPosition().latitude;
+                    lonDest = m.getPosition().longitude;
                 }
                 marker.setTitle(currAdd);
                 marker.showInfoWindow();
@@ -565,9 +572,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         Intent i = new Intent(this, PriceActivity.class);
         i.putExtra("current src", firstAdd);
         i.putExtra("current dest", tgtAdd);
-        i.putExtra("LatDest", m.getPosition().latitude);
-        i.putExtra("LonDest", m.getPosition().longitude);
+        i.putExtra("LatDest", latDest);
+        i.putExtra("LonDest", lonDest);
         i.putExtra("LatSrc",latSrc);
         i.putExtra("LonSrc", lonSrc);
+        startActivity(i);
     }
 }

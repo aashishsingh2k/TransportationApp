@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".NextActivity"></activity>
-        <activity android:name=".PriceActivity"></activity>aashishsingh2k
+        <activity android:name=".PriceActivity"></activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
