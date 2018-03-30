@@ -22,6 +22,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 public class NextActivity extends AppCompatActivity {
     public static final int FormActivity_ID = 1;
     public static final int FormActivity_ID1 = 2;
+    public static final int FormActivity_RideID = 3;
     private Context context;
     DynamoDBMapper dynamoDBMapper;
     String name;
@@ -80,35 +81,10 @@ public class NextActivity extends AppCompatActivity {
 
     public void onClickQuery(View view) {
         Log.v("ONCLICKQUERY: ", "CLICKED QUERY BUTTON");
-        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AWSMobileClient.getInstance().getCredentialsProvider());
-        Log.v("CLIENT:", dynamoDBClient.toString());
-        this.dynamoDBMapper = DynamoDBMapper.builder()
-                .dynamoDBClient(dynamoDBClient)
-                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-                .build();
 
-        final RidesDO ridesItem = new RidesDO();
-        ridesItem.setUserId(name);
-        ridesItem.setTime("02-25-2018");
-        ridesItem.setSrcLat(37.7766048);
-        ridesItem.setSrcLon(-122.3943629);
-        ridesItem.setDestLat(37.759234);
-        ridesItem.setDestLon(-121.4135125);
-
-        Log.v("HI", "HELLO WORLD");
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                dynamoDBMapper.save(ridesItem);
-                // Item saved
-            }
-        }).start();
-
-        /*try {s
-            getName(dynamoDBMapper, 0);
-        } catch(Exception e) {
-        }*/
+        /* Redirect to Ride History Activity */
+        Intent rideHist = new Intent(this, RideHistory.class);
+        startActivityForResult(rideHist, FormActivity_RideID);
     }
 
     private static void getName(DynamoDBMapper mapper, int id) throws Exception {

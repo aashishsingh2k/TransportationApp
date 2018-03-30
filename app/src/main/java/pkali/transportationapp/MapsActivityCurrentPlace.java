@@ -21,6 +21,12 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -45,6 +51,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Locale;
 
@@ -96,6 +103,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     // Used for selecting the current place.
     private static final int M_MAX_ENTRIES = 5;
+    private String name;
+    DynamoDBMapper dynamoDBMapper;
+
     private String[] mLikelyPlaceNames;
     private String[] mLikelyPlaceAddresses;
     private String[] mLikelyPlaceAttributions;
@@ -104,6 +114,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        AWSConfiguration ac = new AWSConfiguration(getApplicationContext());
+        CognitoUserPool cup = new CognitoUserPool(getApplicationContext(), ac);
+        CognitoUser c = cup.getCurrentUser();
+
+        name = c.getUserId();
 
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
@@ -642,6 +659,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     }
 
     public void OnClickConfirmDestination(View view) {
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AWSMobileClient.getInstance().getCredentialsProvider());
+        Log.v("CLIENT:", dynamoDBClient.toString());
+        this.dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                .build();
+
         Intent i = new Intent(this, PriceActivity.class);
         i.putExtra("current src", firstAdd);
         i.putExtra("current dest", tgtAdd);
@@ -649,6 +673,34 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         i.putExtra("LonDest", lonDest);
         i.putExtra("LatSrc",latSrc);
         i.putExtra("LonSrc", lonSrc);
+
+        Log.v("ONCLICKADDRIDE: ", "CLICKED ADD BUTTON");
+        Log.v("CLIENT:", dynamoDBClient.toString());
+        this.dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                .build();
+
+        final RideTableDO ridesItem = new RideTableDO();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        ridesItem.setDate(timestamp.toString());
+        ridesItem.setTimestamp(timestamp.getTime());
+        ridesItem.setUserId(name);
+        ridesItem.setSrcLat(latSrc);
+        ridesItem.setSrcLon(lonSrc);
+        ridesItem.setDstLat(latDest);
+        ridesItem.setDstLon(lonDest);
+
+        Log.v("HI", "HELLO WORLD");
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                dynamoDBMapper.save(ridesItem);
+                // Item saved
+            }
+        }).start();
+
         startActivity(i);
     }
 }

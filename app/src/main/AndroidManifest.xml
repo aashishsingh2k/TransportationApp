@@ -48,6 +48,7 @@
         <activity android:name=".MapsMarkerActivity2"></activity>
         <activity android:name=".nextnextMapActivity" />
         <activity android:name=".PublicTransitActivity"></activity>
+        <activity android:name=".RideHistory"></activity>
     </application>
 
 </manifest>

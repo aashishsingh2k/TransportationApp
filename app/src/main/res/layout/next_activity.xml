@@ -31,7 +31,7 @@
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="47dp"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:onClick="onClickQuery"
