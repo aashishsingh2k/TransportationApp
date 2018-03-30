@@ -23,14 +23,14 @@
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="92dp"
-        android:layout_marginTop="91dp"
+        android:layout_marginBottom="56dp"
+        android:layout_marginTop="8dp"
         android:onClick="OnClickBack"
         android:text="back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lyft_button" />
+        app:layout_constraintTop_toBottomOf="@+id/transit" />
 
     <TextView
         android:id="@+id/src_dest_text"
@@ -40,5 +40,18 @@
         android:text="src dest"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/transit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="36dp"
+        android:onClick="OnClickTransit"
+        android:text="Check out public transport for cheaper than car pools"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lyft_button" />
 
 </android.support.constraint.ConstraintLayout>

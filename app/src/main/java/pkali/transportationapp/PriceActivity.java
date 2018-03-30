@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.maps.model.DirectionsResult;
 import com.lyft.lyftbutton.LyftButton;
 import com.lyft.lyftbutton.RideParams;
 import com.lyft.lyftbutton.RideTypeEnum;
@@ -23,6 +25,8 @@ import com.uber.sdk.rides.client.SessionConfiguration;
  */
 
 public class PriceActivity extends AppCompatActivity {
+    private String src;
+    private String dest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +43,8 @@ public class PriceActivity extends AppCompatActivity {
         Double LonSrc = i.getDoubleExtra("LonSrc", 1);
         Double LatDest = i.getDoubleExtra("LatDest", 1);
         Double LonDest = i.getDoubleExtra("LonDest", 1);
-        String src = i.getStringExtra("current src");
-        String dest = i.getStringExtra("current dest");
+        src = i.getStringExtra("current src");
+        dest = i.getStringExtra("current dest");
 
         LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button);
         lyftButton.setApiConfig(apiConfig);
@@ -95,6 +99,23 @@ public class PriceActivity extends AppCompatActivity {
 
     public void OnClickBack(View view) {
         finish();
+    }
+
+    public void OnClickTransit(View view){
+        DirectionsResult result = PublicTransport.getTransitResult(src, dest);
+
+        Button transit = findViewById(R.id.transit);
+
+        try {
+            transit.setText(PublicTransport.getEndLocationTitle(result));
+//            Intent i = new Intent(this, PublicTransitActivity.class);
+//            i.putExtra("Source", src);
+//            i.putExtra("Destination", dest);
+//            startActivity(i);
+        } catch(Exception e){
+            transit.setText("Oops! no public transport available at that destination!");
+            e.printStackTrace();
+        }
     }
 
 }

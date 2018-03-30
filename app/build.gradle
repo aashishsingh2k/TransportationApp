@@ -44,17 +44,17 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile ('com.amazonaws:aws-android-sdk-mobile-client:2.6.7@aar') { transitive = true; }
+    compile('com.amazonaws:aws-android-sdk-mobile-client:2.6.7@aar') { transitive = true; }
     // Mobile Client for initializing the SDK
-    compile ('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true; }
+    compile('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true; }
 
     // Cognito UserPools for SignIn
     compile 'com.android.support:support-v4:26.1.0'
-    compile ('com.amazonaws:aws-android-sdk-auth-userpools:2.6.+@aar') { transitive = true; }
+    compile('com.amazonaws:aws-android-sdk-auth-userpools:2.6.+@aar') { transitive = true; }
 
     // Sign in UI Library
     compile 'com.android.support:appcompat-v7:26.1.0'
-    compile ('com.amazonaws:aws-android-sdk-auth-ui:2.6.+@aar') { transitive = true; }
+    compile('com.amazonaws:aws-android-sdk-auth-ui:2.6.+@aar') { transitive = true; }
 
     //uber-lyft
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -72,4 +72,7 @@ dependencies {
     compile 'com.amazonaws:aws-android-sdk-ddb:2.4.4'
     compile 'com.amazonaws:aws-android-sdk-ddb-document:2.4.4'
     compile 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.+'
+
+    //public transport
+    compile 'com.google.maps:google-maps-services:0.1.20'
 }
