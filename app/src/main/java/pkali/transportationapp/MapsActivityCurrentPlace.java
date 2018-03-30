@@ -17,16 +17,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -75,6 +81,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int SOURCE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private static final int DEST_AUTOCOMPLETE_REQUEST_CODE = 2;
     private boolean mLocationPermissionGranted;
     private Geocoder geocoder;
 
@@ -450,7 +458,72 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     }
 
+    public void OnClickEnterSource(View view) {
+        try {
+            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
+            startActivityForResult(intent, SOURCE_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
 
+        } catch (GooglePlayServicesNotAvailableException e) {
+
+        }
+    }
+
+    public void OnClickEnterDestination(View view) {
+        try {
+            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
+            startActivityForResult(intent, DEST_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+
+        } catch (GooglePlayServicesNotAvailableException e) {
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SOURCE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                EditText sourceView = (EditText) findViewById(R.id.source_text);
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                m.setPosition(place.getLatLng());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(m.getPosition(),
+                        DEFAULT_ZOOM));
+                sourceView.setText(place.getAddress());
+                firstAdd = place.getAddress().toString();
+                latSrc = place.getLatLng().latitude;
+                lonSrc = place.getLatLng().longitude;
+                Log.i(TAG, "Place: " + place.getName());
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i(TAG, status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        } else if (requestCode == DEST_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                EditText destView = (EditText) findViewById(R.id.destination_text);
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                m.setPosition(place.getLatLng());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(m.getPosition(),
+                        DEFAULT_ZOOM));
+                destView.setText(place.getAddress());
+                tgtAdd = place.getAddress().toString();
+                latDest = place.getLatLng().latitude;
+                lonDest = place.getLatLng().longitude;
+                Log.i(TAG, "Place: " + place.getName());
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i(TAG, status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
+    }
 
     public void dragHelper() {
         geocoder = new Geocoder(this, Locale.getDefault());
@@ -489,8 +562,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     currAdd = add;
                 }
 
-                TextView tv = (TextView) findViewById(R.id.source_text);
-                TextView tv1 = (TextView) findViewById(R.id.destination_text);
+                EditText tv = (EditText) findViewById(R.id.source_text);
+                EditText tv1 = (EditText) findViewById(R.id.destination_text);
                 if(!allowDest) {
                     tv.setText(currAdd);
                     firstAdd = currAdd;
