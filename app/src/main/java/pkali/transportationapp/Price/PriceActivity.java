@@ -1,4 +1,4 @@
-package pkali.transportationapp;
+package pkali.transportationapp.Price;
 
 
 import android.content.Intent;
@@ -19,6 +19,8 @@ import com.uber.sdk.android.rides.RideParameters;
 import com.uber.sdk.android.rides.RideRequestButton;
 import com.uber.sdk.rides.client.ServerTokenSession;
 import com.uber.sdk.rides.client.SessionConfiguration;
+
+import pkali.transportationapp.R;
 
 /**
  * Created by aashishsingh on 2/25/18.

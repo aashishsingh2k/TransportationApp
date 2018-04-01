@@ -1,4 +1,4 @@
-package pkali.transportationapp;
+package pkali.transportationapp.backend;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 import java.util.HashMap;
 import java.util.List;
 
+import pkali.transportationapp.R;
+
 /**
  * Created by shivasuri on 3/24/18.
  */
@@ -21,6 +23,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listHashMap;
 
+    //this is a POJO class with bunch of getters and setters
     public MyExpandableListAdapter(Context context, List<String> listDataHeader, HashMap<String, List<String>> listHashMap) {
         this.context = context;
         this.listDataHeader = listDataHeader;

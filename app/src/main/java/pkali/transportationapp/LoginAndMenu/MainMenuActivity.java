@@ -1,4 +1,4 @@
-package pkali.transportationapp;
+package pkali.transportationapp.LoginAndMenu;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,18 +8,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+
+import pkali.transportationapp.Maps.MapsActivityCurrentPlace;
+import pkali.transportationapp.R;
+import pkali.transportationapp.backend.RideHistory;
 
 /**
  * Created by aashishsingh on 2/17/18.
  */
 
-public class NextActivity extends AppCompatActivity {
+public class MainMenuActivity extends AppCompatActivity {
     public static final int FormActivity_ID = 1;
     public static final int FormActivity_ID1 = 2;
     public static final int FormActivity_RideID = 3;
@@ -40,22 +42,9 @@ public class NextActivity extends AppCompatActivity {
         TextView msg = findViewById(R.id.text_welcome);
         msg.setText("Welcome to your transportation app account " + name + "!");
         msg.setTextSize(20);
-        /*Intent it = getIntent();
-        String name = it.getStringExtra("name");
-        TextView msg = (TextView) findViewById(R.id.text_welcome);
-        msg.setText("Welcome " + name + "!");*/
-
-        /*IdentityManager idm = new IdentityManager(getApplicationContext(),
-                new AWSConfiguration(getApplicationContext()));
-        IdentityManager.setDefaultIdentityManager(idm);
-        String name = idm.getCachedUserID();
-        TextView msg = (TextView) findViewById(R.id.text_welcome);
-        msg.setText("Welcome " + name + "!");*/
-
-
-
     }
 
+    //for signing out from account globally from all devices
     public void OnClickSignOut(View view){
         AWSConfiguration ac = new AWSConfiguration(getApplicationContext());
         CognitoUserPool cup = new CognitoUserPool(getApplicationContext(), ac);
@@ -68,17 +57,7 @@ public class NextActivity extends AppCompatActivity {
 
     }
 
-    public void OnClickPrice(View view) {
-        Intent it1 = new Intent(this, PriceActivity.class);
-        startActivityForResult(it1, FormActivity_ID1);
-
-    }
-
-    public void OnClickEnterSrcMapButton(View view){
-        Intent i = new Intent(this, MapsMarkerActivity.class);
-        startActivity(i);
-    }
-
+    //queries ride history in backend and clicking this button shows the ride history
     public void onClickQuery(View view) {
         Log.v("ONCLICKQUERY: ", "CLICKED QUERY BUTTON");
 
@@ -87,10 +66,7 @@ public class NextActivity extends AppCompatActivity {
         startActivityForResult(rideHist, FormActivity_RideID);
     }
 
-    private static void getName(DynamoDBMapper mapper, int id) throws Exception {
-        Log.v("Query Method", "getName");
-    }
-
+    //starts new activity for GPS button
     public void OnClickGpsButton(View view) {
         Intent i = new Intent(this, MapsActivityCurrentPlace.class);
         startActivity(i);

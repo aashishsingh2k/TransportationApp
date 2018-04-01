@@ -1,4 +1,4 @@
-package pkali.transportationapp;
+package pkali.transportationapp.Maps;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,6 +54,10 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Locale;
+
+import pkali.transportationapp.Price.PriceActivity;
+import pkali.transportationapp.R;
+import pkali.transportationapp.backend.RideTableDO;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -603,26 +607,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             @Override
             public void onInfoWindowClick(Marker marker) {
                 marker = m;
-                helper1();
             }
         });
     }
 
-    /*public void helper(View view) {
-        Intent i = new Intent(this, nextMapActivity.class);
-        i.putExtra("current address", currAdd);
-        i.putExtra("lat", m.getPosition().latitude);
-        i.putExtra("lon", m.getPosition().longitude);
-        startActivity(i);
-    }*/
-
-    public void helper1() {
-        Intent i = new Intent(this, nextMapActivity.class);
-        i.putExtra("current address", currAdd);
-        i.putExtra("lat", m.getPosition().latitude);
-        i.putExtra("lon", m.getPosition().longitude);
-        startActivity(i);
-    }
 
     public void onClickConfirmSource(View view) {
         Button b = (Button) findViewById(R.id.confirm_source);

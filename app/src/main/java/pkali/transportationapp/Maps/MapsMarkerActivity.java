@@ -1,4 +1,4 @@
-package pkali.transportationapp;
+package pkali.transportationapp.Maps;
 
 import android.content.Intent;
 import android.location.Address;
@@ -18,6 +18,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import pkali.transportationapp.R;
 
 /**
  * An activity that displays a Google map with a marker (pin) to indicate a particular location.
@@ -79,6 +81,7 @@ public class MapsMarkerActivity extends AppCompatActivity
 
             }
 
+            //functionality to follow when user ends the dragging of marker
             @Override
             public void onMarkerDragEnd(Marker marker) {
                 marker = m;
@@ -114,65 +117,12 @@ public class MapsMarkerActivity extends AppCompatActivity
             @Override
             public void onInfoWindowClick(Marker marker) {
                 marker = m;
-                helper();
+                //helper();
             }
         });
 
     }
 
-    public void helper() {
-        Intent i = new Intent(this, nextMapActivity.class);
-        i.putExtra("current address", currAdd);
-        i.putExtra("lat", m.getPosition().latitude);
-        i.putExtra("lon", m.getPosition().longitude);
-        startActivity(i);
-    }
 
-
-    /*@Override
-    public void onMarkerDragStart(Marker marker) {
-        marker = m;
-        LatLng currPos = new LatLng(m.getPosition().latitude, m.getPosition().longitude);
-        mMap.addMarker(new MarkerOptions().position(currPos)
-                .draggable(true));
-
-        Log.v("lol", "started");
-    }
-
-    @Override
-    public void onMarkerDrag(Marker marker) {
-        marker = m;
-        LatLng currPos = new LatLng(m.getPosition().latitude, m.getPosition().longitude);
-        mMap.addMarker(new MarkerOptions().position(currPos)
-                .draggable(true));
-        Log.v("lol", "dragging...");
-
-    }
-
-    @Override
-    public void onMarkerDragEnd(Marker marker) {
-        marker = m;
-        LatLng currPos = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
-        Log.v("lol", "ended");
-        LatLng currentPosition = marker.getPosition();
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        List<Address> addresses = null;
-        try {
-            addresses = geocoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1); //1 num of possible location returned
-        } catch (IOException e) {
-            System.out.println("No such address!");
-        }
-
-        String add = "check addresses list!";
-        if(addresses != null) {
-            add = addresses.get(0).toString();
-        }
-        currAdd = add;
-        marker.setTitle(currAdd);
-        marker.showInfoWindow();
-        mMap.addMarker(new MarkerOptions().position(currPos)
-                .title(currAdd).draggable(true));
-
-    }*/
 }
 

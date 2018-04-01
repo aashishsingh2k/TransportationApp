@@ -7,7 +7,7 @@
     android:id="@+id/layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pkali.transportationapp.PriceActivity"
+    tools:context="pkali.transportationapp.Price.PriceActivity"
     tools:layout_editor_absoluteY="81dp">
 
     <com.lyft.lyftbutton.LyftButton

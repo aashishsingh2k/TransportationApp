@@ -1,4 +1,4 @@
-package pkali.transportationapp;
+package pkali.transportationapp.backend;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;

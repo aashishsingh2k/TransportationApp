@@ -1,4 +1,4 @@
-package pkali.transportationapp;
+package pkali.transportationapp.LoginAndMenu;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,6 +16,8 @@ import com.amazonaws.mobile.auth.ui.SignInUI;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
+
+import pkali.transportationapp.R;
 
 public class AuthenticatorActivity extends AppCompatActivity {
     public static final int mainActivity_ID = 1;
@@ -54,13 +56,14 @@ public class AuthenticatorActivity extends AppCompatActivity {
                                 .build();
 
                 SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(AuthenticatorActivity.this, SignInUI.class);
-                signin.login(AuthenticatorActivity.this, NextActivity.class).execute();
+                signin.login(AuthenticatorActivity.this, MainMenuActivity.class).execute();
 
             }
         }).execute();
 
     }
 
+    //if the user is already logged in earlier give him option to take him directly to MainMenuActivity
     public void OnClick1(View view) {
         AWSMobileClient.getInstance().initialize(this).execute();
 
@@ -69,7 +72,7 @@ public class AuthenticatorActivity extends AppCompatActivity {
             @Override
             public void onComplete(AWSStartupResult awsStartupResult) {
                 SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(AuthenticatorActivity.this, SignInUI.class);
-                signin.login(AuthenticatorActivity.this, NextActivity.class).execute();
+                signin.login(AuthenticatorActivity.this, MainMenuActivity.class).execute();
 
             }
         }).execute();

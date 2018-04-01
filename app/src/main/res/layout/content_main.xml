@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/data"
-    tools:context="pkali.transportationapp.AuthenticatorActivity"
+    tools:context="pkali.transportationapp.LoginAndMenu.AuthenticatorActivity"
     tools:layout_editor_absoluteY="81dp"
     tools:showIn="@layout/activity_main">
 

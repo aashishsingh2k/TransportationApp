@@ -35,7 +35,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:onClick="onClickQuery"
-        android:text="Query!"
+        android:text="Ride History"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

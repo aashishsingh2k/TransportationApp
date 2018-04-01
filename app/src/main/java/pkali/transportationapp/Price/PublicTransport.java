@@ -1,4 +1,4 @@
-package pkali.transportationapp;
+package pkali.transportationapp.Price;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
