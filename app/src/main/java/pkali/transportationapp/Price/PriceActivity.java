@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.maps.model.DirectionsResult;
@@ -29,11 +32,24 @@ import pkali.transportationapp.R;
 public class PriceActivity extends AppCompatActivity {
     private String src;
     private String dest;
+    private Double latitudeSrc;
+    private Double longitudeSrc;
+    private Double latitudeDest;
+    private Double longitudeDest;
+    private String SrcAdd;
+    private String DestAdd;
+    private final int mainActivity_ID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_price);
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sortby_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
         ApiConfig apiConfig = new ApiConfig.Builder()
                 .setClientId("JzHNYTU35r0S")
@@ -42,11 +58,17 @@ public class PriceActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         Double LatSrc = i.getDoubleExtra("LatSrc", 1);
+        latitudeSrc = LatSrc;
         Double LonSrc = i.getDoubleExtra("LonSrc", 1);
+        longitudeSrc = LonSrc;
         Double LatDest = i.getDoubleExtra("LatDest", 1);
+        latitudeDest = LatDest;
         Double LonDest = i.getDoubleExtra("LonDest", 1);
+        longitudeDest = LonDest;
         src = i.getStringExtra("current src");
+        SrcAdd = src;
         dest = i.getStringExtra("current dest");
+        DestAdd = dest;
 
         LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button);
         lyftButton.setApiConfig(apiConfig);
@@ -83,10 +105,15 @@ public class PriceActivity extends AppCompatActivity {
                 .setProductId("a1111c8c-c720-46c3-8534-2fcdd730040d")
                 // Required for price estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of dropoff location
                 .setDropoffLocation(
+                        LatSrc, LatDest, src, src)
+                // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
+                .setPickupLocation(LonSrc, LonDest, dest, dest)
+                .build();
+        /*.setDropoffLocation(
                         LatDest, LonDest, dest, dest)
                 // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
                 .setPickupLocation(LatSrc, LonSrc, src, src)
-                .build();
+                .build();*/
         // set parameters for the RideRequestButton instance
         requestButton.setRideParameters(rideParams);
 
@@ -101,6 +128,32 @@ public class PriceActivity extends AppCompatActivity {
 
     public void OnClickBack(View view) {
         finish();
+    }
+
+    public void onStartButtonClick(View view) {
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        String level = spinner.getSelectedItem().toString();
+        if(level.equals("Price")) {
+            Intent i = new Intent(this, PriceSortActivity.class);
+            i.putExtra("current src", SrcAdd);
+            i.putExtra("current dest", DestAdd);
+            i.putExtra("LatDest", latitudeDest);
+            i.putExtra("LonDest", longitudeDest);
+            i.putExtra("LatSrc", latitudeSrc);
+            i.putExtra("LonSrc", longitudeSrc);
+            startActivityForResult(i, mainActivity_ID);
+        }
+        if(level.equals("ETA")) {
+            Intent i = new Intent(this, ETASortActivity.class);
+            i.putExtra("current src", SrcAdd);
+            i.putExtra("current dest", DestAdd);
+            i.putExtra("LatDest", latitudeDest);
+            i.putExtra("LonDest", longitudeDest);
+            i.putExtra("LatSrc", latitudeSrc);
+            i.putExtra("LonSrc", longitudeSrc);
+            startActivityForResult(i, mainActivity_ID);
+        }
+
     }
 
     public void OnClickTransit(View view){
