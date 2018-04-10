@@ -34,18 +34,20 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <!--              The API key for Google Maps-based APIs. -->
+        <!-- The API key for Google Maps-based APIs. -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBG57qk1lkvewRUfAp2nrTtECZJfWzstRk" />
         <!-- AIzaSyDZdc-eHMXyI4dFkHX_UWtEzmxtrxgtsJk -->
         <!-- AIzaSyBG57qk1lkvewRUfAp2nrTtECZJfWzstRk -->
-        <activity android:name=".Maps.MapsMarkerActivity"></activity>
+        <activity android:name=".Maps.MapsMarkerActivity" />
         <activity android:name=".Maps.MapsActivityCurrentPlace">
             >
         </activity>
-        <activity android:name=".Price.PublicTransitActivity"></activity>
-        <activity android:name=".backend.RideHistory"></activity>
+        <activity android:name=".Price.PublicTransitActivity" />
+        <activity android:name=".backend.RideHistory" />
+        <activity android:name=".Price.PriceSortActivity" />
+        <activity android:name=".Price.ETASortActivity"></activity>
     </application>
 
 </manifest>

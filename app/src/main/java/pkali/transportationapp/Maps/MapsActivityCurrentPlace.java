@@ -507,7 +507,15 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 EditText sourceView = (EditText) findViewById(R.id.source_text);
                 Place place = PlaceAutocomplete.getPlace(this, data);
-                m.setPosition(place.getLatLng());
+                if(m != null) {
+                    m.setPosition(place.getLatLng());
+                }
+                else {
+                    m = mMap.addMarker(new MarkerOptions()
+                            .title(getString(R.string.default_info_title))
+                            .position(mDefaultLocation)
+                            .snippet(getString(R.string.default_info_snippet)));
+                }
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(m.getPosition(),
                         DEFAULT_ZOOM));
                 sourceView.setText(place.getAddress());

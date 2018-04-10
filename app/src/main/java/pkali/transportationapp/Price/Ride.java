@@ -5,8 +5,12 @@ package pkali.transportationapp.Price;
  */
 
 public class Ride {
+    //uber or lyft
+    private String company;
     //Ride type (Lyft Line, Uber POOL, UBER X, etc.)
     private String name;
+    //product id (identifies different ride types in dif areas)
+    private String productId;
     //estimated distance in miles
     private float distance;
     //estimated duration of trip from start to finish locations in seconds
@@ -18,13 +22,23 @@ public class Ride {
     //estimate of eta of ride in seconds
     private int eta;
 
-    public Ride(String name, float distance, int duration, int highPriceEst, int lowPriceEst, int eta) {
+    public Ride(String company, String name, String productId, float distance, int duration, int highPriceEst, int lowPriceEst, int eta) {
+        this.company = company;
         this.name = name;
+        this.productId = productId;
         this.distance = distance;
         this.duration = duration;
         this.highPriceEst = highPriceEst;
         this.lowPriceEst = lowPriceEst;
         this.eta = eta;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public String getProductId() {
+        return productId;
     }
 
     //returns ride type name
