@@ -46,16 +46,8 @@
         </activity>
         <activity android:name=".Price.PublicTransitActivity" />
         <activity android:name=".backend.RideHistory" />
-        <activity
-            android:name=".Price.PriceSortActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_price_sort"
-            android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name=".Price.ETASortActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_etasort"
-            android:theme="@style/FullscreenTheme"></activity>
+        <activity android:name=".Price.PriceSortActivity" />
+        <activity android:name=".Price.ETASortActivity"></activity>
     </application>
 
 </manifest>

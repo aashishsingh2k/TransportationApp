@@ -53,6 +53,7 @@ public class MainMenuActivity extends AppCompatActivity {
         c.signOut();
 
         Intent it = new Intent(this, AuthenticatorActivity.class);
+
         startActivityForResult(it, FormActivity_ID);
 
     }

@@ -21,6 +21,7 @@ import pkali.transportationapp.R;
 
 public class AuthenticatorActivity extends AppCompatActivity {
     public static final int mainActivity_ID = 1;
+    public static boolean signOut = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +33,14 @@ public class AuthenticatorActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        /*FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         AWSMobileClient.getInstance().initialize(this).execute();
         AWSMobileClient.getInstance().initialize(this, new AWSStartupHandler() {
@@ -55,27 +56,30 @@ public class AuthenticatorActivity extends AppCompatActivity {
                                 .canCancel(true)
                                 .build();
 
+
                 SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(AuthenticatorActivity.this, SignInUI.class);
                 signin.login(AuthenticatorActivity.this, MainMenuActivity.class).execute();
 
             }
         }).execute();
+
 
     }
 
     //if the user is already logged in earlier give him option to take him directly to MainMenuActivity
     public void OnClick1(View view) {
-        AWSMobileClient.getInstance().initialize(this).execute();
 
-        AWSMobileClient.getInstance().initialize(this, new AWSStartupHandler() {
+                AWSMobileClient.getInstance().initialize(this).execute();
 
-            @Override
-            public void onComplete(AWSStartupResult awsStartupResult) {
-                SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(AuthenticatorActivity.this, SignInUI.class);
-                signin.login(AuthenticatorActivity.this, MainMenuActivity.class).execute();
+                AWSMobileClient.getInstance().initialize(this, new AWSStartupHandler() {
 
-            }
-        }).execute();
+                    @Override
+                    public void onComplete(AWSStartupResult awsStartupResult) {
+                        SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(AuthenticatorActivity.this, SignInUI.class);
+                        signin.login(AuthenticatorActivity.this, MainMenuActivity.class).execute();
+
+                    }
+                }).execute();
     }
 
     @Override
