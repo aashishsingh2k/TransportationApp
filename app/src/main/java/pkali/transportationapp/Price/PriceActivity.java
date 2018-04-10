@@ -155,19 +155,21 @@ public class PriceActivity extends AppCompatActivity {
                     for (PriceEstimate p : prices) {
                         Log.v("###################", p.getDisplayName() + p.getEstimate());
                         timeResponse = service.getPickupTimeEstimate((float) LatSrc, (float) LonSrc, p.getProductId()).execute();
-                        TimeEstimate rideEta = timeResponse.body().getTimes().get(0);
-                        if (p.getHighEstimate() == null) {
-                            highEst = 0;
-                        } else {
-                            highEst = p.getHighEstimate() * 100;
+                        if (!timeResponse.body().getTimes().isEmpty()) {
+                            TimeEstimate rideEta = timeResponse.body().getTimes().get(0);
+                            if (p.getHighEstimate() == null) {
+                                highEst = 0;
+                            } else {
+                                highEst = p.getHighEstimate() * 100;
+                            }
+                            if (p.getLowEstimate() == null) {
+                                lowEst = 0;
+                            } else {
+                                lowEst = p.getLowEstimate() * 100;
+                            }
+                            rideOptions.add(new Ride("uber", p.getDisplayName(), p.getProductId(), p.getDistance(), p.getDuration(), highEst, lowEst, rideEta.getEstimate()));
+                            Log.v("&&&&&&&", rideOptions.size() + "");
                         }
-                        if (p.getLowEstimate() == null) {
-                            lowEst = 0;
-                        } else {
-                            lowEst = p.getLowEstimate() * 100;
-                        }
-                        rideOptions.add(new Ride("uber", p.getDisplayName(), p.getProductId(), p.getDistance(), p.getDuration(), highEst, lowEst, rideEta.getEstimate()));
-                        Log.v("&&&&&&&", rideOptions.size() + "");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
