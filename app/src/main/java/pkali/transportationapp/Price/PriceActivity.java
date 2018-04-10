@@ -132,6 +132,7 @@ public class PriceActivity extends AppCompatActivity {
                 } else {
                     lowEst = p.getLowEstimate() * 100;
                 }
+                Log.d("UBER", p.getDisplayName());
                 rideOptions.add(new Ride(p.getDisplayName(), p.getDistance(), p.getDuration(), highEst, lowEst, rideEta.getEstimate()));
             }
 
@@ -171,6 +172,7 @@ public class PriceActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<EtaEstimateResponse> call, Response<EtaEstimateResponse> response) {
                             List<Eta> etaResult = response.body().eta_estimates;
+                            Log.d("Lyft", c.display_name);
                             rideOptions.add(new Ride(c.display_name, (float) c.estimated_distance_miles.doubleValue(), c.estimated_duration_seconds,
                                     c.estimated_cost_cents_max, c.estimated_cost_cents_min, etaResult.get(0).eta_seconds));
                         }
