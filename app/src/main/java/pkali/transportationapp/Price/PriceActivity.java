@@ -77,11 +77,6 @@ public class PriceActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        ApiConfig apiConfig = new ApiConfig.Builder()
-                .setClientId("JzHNYTU35r0S")
-                .setClientToken("mPXtV/bLryJfivrfsmvE7XrADmIXfmUj9Fm+hBLIMfDOexXRL6Y6VqMnIEhYF17oTrajzeLU6swgDBroJxZ5i/SXdWdSg8HjMxIKFETz7tV9UWYv4zEHeJw=")
-                .build();
-
         Intent i = getIntent();
         Double LatSrc = i.getDoubleExtra("LatSrc", 1);
         latitudeSrc = LatSrc;
@@ -98,16 +93,6 @@ public class PriceActivity extends AppCompatActivity {
 
         initializeLyft(LatDest, LonDest, LatSrc, LonSrc);
         initializeUber(LatDest, LonDest, LatSrc, LonSrc);
-        Iterator itr = rideOptions.iterator();
-        Log.v("SEETHISBEFORE", "BEFORE");
-        while(itr.hasNext()) {
-            Log.v("SEETHISDURING", "DURING");
-            Ride r = (Ride) itr.next();
-            String s = r.getProductId() + ";" + r.getPrice();
-            Log.v("SEE THIS", s);
-
-        }
-        Log.v("SEETHISAFTER", "AFTER");
 
         TextView tv = (TextView) findViewById(R.id.src_dest_text);
         tv.setText("Source address: " + src + "; Destination Address: " + dest);
@@ -128,32 +113,27 @@ public class PriceActivity extends AppCompatActivity {
         UberSdk.initialize(config);
 
         // get the context by invoking ``getApplicationContext()``, ``getContext()``, ``getBaseContext()`` or ``this`` when in the activity class
-        RideRequestButton requestButton = new RideRequestButton(getApplicationContext());
+        //RideRequestButton requestButton = new RideRequestButton(getApplicationContext());
         // get your layout, for instance:
-        ConstraintLayout layout =  findViewById(R.id.layout_main);
+        //ConstraintLayout layout =  findViewById(R.id.layout_main);
         //layout.addView(requestButton);
 
-        RideParameters rideParams = new RideParameters.Builder()
-                // Optional product_id from /v1/products endpoint (e.g. UberX). If not provided, most cost-efficient product will be used
-                .setProductId("a1111c8c-c720-46c3-8534-2fcdd730040d")
-                // Required for price estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of dropoff location
-                .setDropoffLocation(
-                        LatSrc, LatDest, src, src)
-                // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
-                .setPickupLocation(LonSrc, LonDest, dest, dest)
-                .build();
+//        RideParameters rideParams = new RideParameters.Builder()
+//                // Optional product_id from /v1/products endpoint (e.g. UberX). If not provided, most cost-efficient product will be used
+//                .setProductId("a1111c8c-c720-46c3-8534-2fcdd730040d")
+//                // Required for price estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of dropoff location
+//                .setDropoffLocation(
+//                        LatSrc, LatDest, src, src)
+//                // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
+//                .setPickupLocation(LonSrc, LonDest, dest, dest)
+//                .build();
         /*.setDropoffLocation(
                         LatDest, LonDest, dest, dest)
                 // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
                 .setPickupLocation(LatSrc, LonSrc, src, src)
                 .build();*/
         // set parameters for the RideRequestButton instance
-        requestButton.setRideParameters(rideParams);
-
-
-
-
-
+        //requestButton.setRideParameters(rideParams);
 
         //Response<List<Product>> response = service.getProducts().execute();
         Thread t = new Thread(new Runnable() {
@@ -167,37 +147,41 @@ public class PriceActivity extends AppCompatActivity {
                     Response<PriceEstimatesResponse> priceResponse;
                     Response<TimeEstimatesResponse> timeResponse;
 
-                    priceResponse = service.getPriceEstimates((float) LonSrc, (float) LatSrc, (float) LatDest, (float) LonDest).execute();
-                    //Log.v("(((((((((((((((((", priceResponse.body().getPrices().get(0).getEstimate());
+                    priceResponse = service.getPriceEstimates((float) LatSrc, (float) LonSrc, (float) LatDest, (float) LonDest).execute();
+                    //timeResponse = service.getPickupTimeEstimate((float) LatSrc, (float) LonSrc, null).execute();
+                    Log.v("(((((((((((((((((", "size" + + priceResponse.code() +(priceResponse.body().getPrices().size()));
                     List<PriceEstimate> prices = priceResponse.body().getPrices();
                     int highEst, lowEst;
                     for (PriceEstimate p : prices) {
+                        Log.v("###################", p.getDisplayName() + p.getEstimate());
                         timeResponse = service.getPickupTimeEstimate((float) LatSrc, (float) LonSrc, p.getProductId()).execute();
                         TimeEstimate rideEta = timeResponse.body().getTimes().get(0);
                         if (p.getHighEstimate() == null) {
-                            if (p.getHighEstimate() == null) {
-                                highEst = 0;
-                            } else {
-                                highEst = p.getHighEstimate() * 100;
-                            }
-                            if (p.getLowEstimate() == null) {
-                                lowEst = 0;
-                            } else {
-                                lowEst = p.getLowEstimate() * 100;
-                            }
-                            rideOptions.add(new Ride("uber", p.getDisplayName(), p.getProductId(), p.getDistance(), p.getDuration(), highEst, lowEst, rideEta.getEstimate()));
+                            highEst = 0;
+                        } else {
+                            highEst = p.getHighEstimate() * 100;
                         }
+                        if (p.getLowEstimate() == null) {
+                            lowEst = 0;
+                        } else {
+                            lowEst = p.getLowEstimate() * 100;
+                        }
+                        rideOptions.add(new Ride("uber", p.getDisplayName(), p.getProductId(), p.getDistance(), p.getDuration(), highEst, lowEst, rideEta.getEstimate()));
+                        Log.v("&&&&&&&", rideOptions.size() + "");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //Log.d("UBER", p.getDisplayName());
-                //rideOptions.add(new Ride(p.getDisplayName(), p.getDistance(), p.getDuration(), highEst, lowEst, rideEta.getEstimate()));
             }
         });
         t.start();
         try {
             t.join();
+            for(Ride r : rideOptions) {
+                String s = r.getCompany() + ";" + r.getProductId() + ";" + r.getPrice();
+                Log.v("SEE THIS", s);
+
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -210,15 +194,15 @@ public class PriceActivity extends AppCompatActivity {
                 .setClientToken("mPXtV/bLryJfivrfsmvE7XrADmIXfmUj9Fm+hBLIMfDOexXRL6Y6VqMnIEhYF17oTrajzeLU6swgDBroJxZ5i/SXdWdSg8HjMxIKFETz7tV9UWYv4zEHeJw=")
                 .build();
 
-        LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button);
-        lyftButton.setApiConfig(apiConfig);
+        //LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button);
+        //lyftButton.setApiConfig(apiConfig);
 
-        RideParams.Builder rideParamsBuilder = new RideParams.Builder()
-                .setPickupLocation(LatSrc, LonSrc) //4th st SF
-                .setDropoffLocation(LatDest, LonDest); //2900 N MacArthur Dr, Tracy, CA 95376
-        rideParamsBuilder.setRideTypeEnum(RideTypeEnum.CLASSIC);
+        //RideParams.Builder rideParamsBuilder = new RideParams.Builder()
+                //.setPickupLocation(LatSrc, LonSrc) //4th st SF
+                //.setDropoffLocation(LatDest, LonDest); //2900 N MacArthur Dr, Tracy, CA 95376
+        //rideParamsBuilder.setRideTypeEnum(RideTypeEnum.CLASSIC);
 
-        lyftButton.setRideParams(rideParamsBuilder.build());
+        //lyftButton.setRideParams(rideParamsBuilder.build());
         //lyftButton.load();
 
         Thread t = new Thread(new Runnable() {
@@ -243,11 +227,11 @@ public class PriceActivity extends AppCompatActivity {
                                     if (etaResult.get(0).eta_seconds != null) {
                                         etaResultValue = etaResult.get(0).eta_seconds;
                                     }
-                                    //Log.v("**************", "lyft" + );
                                     rideOptions.add(new Ride("lyft", c.display_name, c.ride_type, (float) c.estimated_distance_miles.doubleValue(), c.estimated_duration_seconds,
                                             c.estimated_cost_cents_max,
                                             c.estimated_cost_cents_min,
                                             etaResultValue));
+                                    Log.v("&&&&&&&", rideOptions.size() + "");
                                 }
 
                                 @Override
@@ -266,6 +250,12 @@ public class PriceActivity extends AppCompatActivity {
         t.start();
         try {
             t.join();
+
+            for(Ride r : rideOptions) {
+                String s = r.getCompany() + ";" + r.getProductId() + ";" + r.getPrice();
+                Log.v("SEE THIS", s);
+
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
