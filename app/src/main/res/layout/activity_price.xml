@@ -10,88 +10,68 @@
     tools:context="pkali.transportationapp.Price.PriceActivity"
     tools:layout_editor_absoluteY="81dp">
 
-    <com.lyft.lyftbutton.LyftButton
-        android:id="@+id/lyft_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="230dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_done"
-        lyft:lyftStyle="lyftMulberryDark" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="56dp"
-        android:layout_marginTop="8dp"
-        android:onClick="OnClickBack"
-        android:text="back"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/transit" />
-
-    <TextView
-        android:id="@+id/src_dest_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="67dp"
-        android:text="src dest"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+    <include layout="@layout/my_video_background" />
     <Button
         android:id="@+id/transit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginBottom="39dp"
         android:onClick="OnClickTransit"
         android:text="Check out public transport for cheaper than car pools"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/spinner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lyft_button" />
+        app:layout_constraintTop_toBottomOf="@+id/src_dest_text" />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginTop="70dp"
-        app:layout_constraintBottom_toTopOf="@+id/lyft_button"
+        android:layout_marginBottom="36dp"
+        android:layout_marginEnd="73dp"
+        android:visibility="visible"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/button_done"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/src_dest_text" />
+        app:layout_constraintTop_toBottomOf="@+id/transit" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginStart="51dp"
-        android:layout_marginTop="142dp"
+        android:layout_marginBottom="19dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginStart="52dp"
         android:text="Sort by:"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/button_done"
         app:layout_constraintEnd_toStartOf="@+id/spinner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/spinner"
+        android:textColor="@color/white"/>
 
     <Button
         android:id="@+id/button_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="9dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="96dp"
+        android:layout_marginStart="26dp"
         android:onClick="onStartButtonClick"
         android:text="Done"
-        app:layout_constraintBottom_toTopOf="@+id/lyft_button"
-        app:layout_constraintEnd_toEndOf="@+id/lyft_button"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
+    <TextView
+        android:id="@+id/src_dest_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="133dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/transit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

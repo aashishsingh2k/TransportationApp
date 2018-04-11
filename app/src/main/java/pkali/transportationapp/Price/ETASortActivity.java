@@ -10,6 +10,12 @@ import com.lyft.lyftbutton.LyftButton;
 import com.lyft.lyftbutton.RideParams;
 import com.lyft.lyftbutton.RideTypeEnum;
 import com.lyft.networking.ApiConfig;
+import com.lyft.networking.apis.LyftPublicApi;
+import com.uber.sdk.android.core.UberSdk;
+import com.uber.sdk.android.rides.RideParameters;
+import com.uber.sdk.android.rides.RideRequestButton;
+import com.uber.sdk.rides.client.ServerTokenSession;
+import com.uber.sdk.rides.client.SessionConfiguration;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -30,13 +36,14 @@ public class ETASortActivity extends AppCompatActivity {
         Double LonSrc = i.getDoubleExtra("LonSrc", 1);
         Double LatDest = i.getDoubleExtra("LatDest", 1);
         Double LonDest = i.getDoubleExtra("LonDest", 1);
+        String SrcAdd = i.getStringExtra("current src");
+        String DestAdd = i.getStringExtra("current dest");
         String[] arr = getETAArray();
-        //Log.v("------", "" + arr.length);
         for(int j = 0; j < arr.length; j++) {
 
             GridLayout gridLayout = (GridLayout) findViewById(R.id.gridView);
-            gridLayout.setRowCount(10);
-            gridLayout.setColumnCount(4);
+            gridLayout.setRowCount(18);
+            gridLayout.setColumnCount(2);
             String copy = arr[j];
             String copy1 = arr[j];
             String copy2 = arr[j];
@@ -59,8 +66,8 @@ public class ETASortActivity extends AppCompatActivity {
                     LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button_line);
                     gridLayout.removeView(lyftButton);
                     gridLayout.addView(lyftButton, new GridLayout.LayoutParams(
-                            GridLayout.spec(j + 1, GridLayout.CENTER),
-                            GridLayout.spec(1, GridLayout.CENTER)));
+                            GridLayout.spec(j + 1, GridLayout.FILL),
+                            GridLayout.spec(1, GridLayout.FILL)));
 
 
                     lyftButton.setApiConfig(apiConfig);
@@ -71,15 +78,6 @@ public class ETASortActivity extends AppCompatActivity {
 
                     rideParamsBuilder.setRideTypeEnum(RideTypeEnum.LINE);
                     lyftButton.setRideParams(rideParamsBuilder.build());
-                    /*RelativeLayout.LayoutParams rel_btn = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                    rel_btn.leftMargin = 50;
-                    rel_btn.topMargin = ((j+1) * 300);
-
-                    lyftButton.setLayoutParams(rel_btn);*/
-
-
                     lyftButton.load();
                 }
 
@@ -87,8 +85,8 @@ public class ETASortActivity extends AppCompatActivity {
                     LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button_classic);
                     gridLayout.removeView(lyftButton);
                     gridLayout.addView(lyftButton, new GridLayout.LayoutParams(
-                            GridLayout.spec(j + 1, GridLayout.CENTER),
-                            GridLayout.spec(1, GridLayout.CENTER)));
+                            GridLayout.spec(j + 1, GridLayout.FILL),
+                            GridLayout.spec(1, GridLayout.FILL)));
 
                     lyftButton.setApiConfig(apiConfig);
 
@@ -107,8 +105,8 @@ public class ETASortActivity extends AppCompatActivity {
                     LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button_plus);
                     gridLayout.removeView(lyftButton);
                     gridLayout.addView(lyftButton, new GridLayout.LayoutParams(
-                            GridLayout.spec(j - lyftCount + 1, GridLayout.CENTER),
-                            GridLayout.spec(1, GridLayout.CENTER)));
+                            GridLayout.spec(j - lyftCount + 1, GridLayout.FILL),
+                            GridLayout.spec(1, GridLayout.FILL)));
 
                     lyftButton.setApiConfig(apiConfig);
 
@@ -128,7 +126,40 @@ public class ETASortActivity extends AppCompatActivity {
 
             }
             else if(company.equals("uber")) {
+                SessionConfiguration config = new SessionConfiguration.Builder()
+                        // mandatory
+                        .setClientId("lOY0hMpn4LNLlK-Si1Jjis7UITCe9Hi7")
+                        // required for enhanced button features
+                        .setServerToken("T_g5Hpuy-W40l99PSxwF_894ICvzNqzKf1CJidNU")
+                        // required for implicit grant authentication
+                        .setRedirectUri("http://localhost:8000")
+                        // optional: set sandbox as operating environment
+                        //.setEnvironment(SessionConfiguration.Environment.SANDBOX)
+                        .build();
 
+                UberSdk.initialize(config);
+
+                RideRequestButton requestButton = new RideRequestButton(getApplicationContext());
+                // get your layout, for instance:
+                GridLayout layout =  findViewById(R.id.gridView);
+                gridLayout.addView(requestButton, new GridLayout.LayoutParams(
+                        GridLayout.spec(j + 1, GridLayout.FILL),
+                        GridLayout.spec(1, GridLayout.FILL)));
+
+                RideParameters rideParams = new RideParameters.Builder()
+                        // Optional product_id from /v1/products endpoint (e.g. UberX). If not provided, most cost-efficient product will be used
+                        .setProductId(productID)
+                        // Required for price estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of dropoff location
+                        .setDropoffLocation(
+                                LatDest, LonDest, SrcAdd, SrcAdd)
+                        // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
+                        .setPickupLocation(LatSrc, LonSrc, DestAdd, DestAdd)
+                        .build();
+                // set parameters for the RideRequestButton instance
+                requestButton.setRideParameters(rideParams);
+                ServerTokenSession session = new ServerTokenSession(config);
+                requestButton.setSession(session);
+                requestButton.loadRideInformation();
             }
 
         }
@@ -137,8 +168,6 @@ public class ETASortActivity extends AppCompatActivity {
     public String[] getETAArray() {
         Intent i = getIntent();
         ETAArr = i.getStringArrayExtra("ETAArray");
-        Log.v("------", "" + ETAArr.length);
-
         Arrays.sort(ETAArr, MY_ORDER_1);
 
         for(int j = 0; j < ETAArr.length; j++) {

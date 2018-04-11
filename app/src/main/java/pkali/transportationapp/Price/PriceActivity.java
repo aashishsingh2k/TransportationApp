@@ -2,6 +2,7 @@ package pkali.transportationapp.Price;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.google.maps.model.DirectionsResult;
 import com.lyft.lyftbutton.LyftButton;
@@ -70,6 +72,10 @@ public class PriceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_price);
+        VideoView videoview = (VideoView) findViewById(R.id.videoView);
+        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+ R.raw.myvideo);
+        videoview.setVideoURI(uri);
+        videoview.start();
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
