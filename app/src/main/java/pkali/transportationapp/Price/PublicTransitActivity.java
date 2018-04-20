@@ -34,7 +34,7 @@ public class PublicTransitActivity extends AppCompatActivity
 
         Intent i  = getIntent();
 
-        src = i.getStringExtra("Soure");
+        src = i.getStringExtra("Source");
         dest = i.getStringExtra("Destination");
 
         // Get the SupportMapFragment and request notification
