@@ -333,10 +333,10 @@ public class PriceActivity extends AppCompatActivity {
 
         try {
             transit.setText(PublicTransport.getEndLocationTitle(result));
-//            Intent i = new Intent(this, PublicTransitActivity.class);
-//            i.putExtra("Source", src);
-//            i.putExtra("Destination", dest);
-//            startActivity(i);
+            Intent i = new Intent(this, PublicTransitActivity.class);
+            i.putExtra("Source", src);
+            i.putExtra("Destination", dest);
+            startActivity(i);
         } catch(Exception e){
             transit.setText("Oops! no public transport available at that destination!");
             e.printStackTrace();

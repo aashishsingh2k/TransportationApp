@@ -45,7 +45,6 @@
             >
         </activity>
         <activity android:name=".Price.PublicTransitActivity" />
-        <activity android:name=".backend.RideHistory" />
         <activity android:name=".Price.PriceSortActivity" />
         <activity android:name=".Price.ETASortActivity"></activity>
     </application>

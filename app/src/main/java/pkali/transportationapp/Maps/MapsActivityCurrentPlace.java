@@ -8,8 +8,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -55,8 +57,10 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Locale;
 
+import pkali.transportationapp.LoginAndMenu.AuthenticatorActivity;
 import pkali.transportationapp.Price.PriceActivity;
 import pkali.transportationapp.R;
+import pkali.transportationapp.backend.RideHistory;
 import pkali.transportationapp.backend.RideTableDO;
 
 /**
@@ -115,10 +119,16 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private String[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
 
+    public static final int FormActivity_ID = 1;
+    public static final int FormActivity_ID1 = 2;
+    public static final int FormActivity_RideID = 3;
+
+
+    private DrawerLayout mDrawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         AWSConfiguration ac = new AWSConfiguration(getApplicationContext());
         CognitoUserPool cup = new CognitoUserPool(getApplicationContext(), ac);
@@ -148,6 +158,30 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+                        if(menuItem.getItemId() == R.id.sign_out){
+                            OnClickSignOut();
+                        } else {
+                            onClickQuery();
+                        }
+
+                        return true;
+                    }
+                });
 
     }
 
@@ -698,5 +732,28 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }).start();
 
         startActivity(i);
+    }
+
+    //for signing out from account globally from all devices
+    public void OnClickSignOut(){
+        AWSConfiguration ac = new AWSConfiguration(getApplicationContext());
+        CognitoUserPool cup = new CognitoUserPool(getApplicationContext(), ac);
+        CognitoUser c = cup.getCurrentUser();
+
+        c.signOut();
+
+        Intent it = new Intent(this, AuthenticatorActivity.class);
+
+        startActivityForResult(it, FormActivity_ID);
+
+    }
+
+    //queries ride history in backend and clicking this button shows the ride history
+    public void onClickQuery() {
+        Log.v("ONCLICKQUERY: ", "CLICKED QUERY BUTTON");
+
+        /* Redirect to Ride History Activity */
+        Intent rideHist = new Intent(this, RideHistory.class);
+        startActivityForResult(rideHist, FormActivity_RideID);
     }
 }

@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Pranav\SophSpring\CIS350\PROJECT\TransportationApp\350S18-10-TransportationApp.iml" filepath="C:\Pranav\SophSpring\CIS350\PROJECT\TransportationApp\350S18-10-TransportationApp.iml" />
-      <module fileurl="file://C:\Pranav\SophSpring\CIS350\PROJECT\TransportationApp\GMAPS CLONE.iml" filepath="C:\Pranav\SophSpring\CIS350\PROJECT\TransportationApp\GMAPS CLONE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/350S18-10-TransportationApp.iml" filepath="$PROJECT_DIR$/350S18-10-TransportationApp.iml" />
+      <module fileurl="file://C:/Pranav/SophSpring/CIS350/PROJECT/TransportationApp/350S18-10-TransportationApp.iml" filepath="C:/Pranav/SophSpring/CIS350/PROJECT/TransportationApp/350S18-10-TransportationApp.iml" />
+      <module fileurl="file://C:/Pranav/SophSpring/CIS350/PROJECT/TransportationApp/GMAPS CLONE.iml" filepath="C:/Pranav/SophSpring/CIS350/PROJECT/TransportationApp/GMAPS CLONE.iml" />
       <module fileurl="file://$PROJECT_DIR$/TransportationApp.iml" filepath="$PROJECT_DIR$/TransportationApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

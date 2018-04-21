@@ -17,6 +17,7 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
 
+import pkali.transportationapp.Maps.MapsActivityCurrentPlace;
 import pkali.transportationapp.R;
 
 public class AuthenticatorActivity extends AppCompatActivity {
@@ -58,7 +59,7 @@ public class AuthenticatorActivity extends AppCompatActivity {
 
 
                 SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(AuthenticatorActivity.this, SignInUI.class);
-                signin.login(AuthenticatorActivity.this, MainMenuActivity.class).execute();
+                signin.login(AuthenticatorActivity.this, MapsActivityCurrentPlace.class).execute();
 
             }
         }).execute();
@@ -76,7 +77,7 @@ public class AuthenticatorActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(AWSStartupResult awsStartupResult) {
                         SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(AuthenticatorActivity.this, SignInUI.class);
-                        signin.login(AuthenticatorActivity.this, MainMenuActivity.class).execute();
+                        signin.login(AuthenticatorActivity.this, MapsActivityCurrentPlace.class).execute();
 
                     }
                 }).execute();
