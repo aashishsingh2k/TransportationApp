@@ -32,55 +32,76 @@
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:layout_marginBottom="15dp"
-        android:layout_marginStart="29dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="15dp"
         android:onClick="onClickConfirmSource"
         android:text="Confirm Source"
         app:layout_constraintBottom_toTopOf="@+id/confirm_destination"
-        app:layout_constraintStart_toStartOf="@+id/destination_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <EditText
         android:id="@+id/source_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="14"
+        android:padding="5dp"
+        android:textSize="20dp"
+        android:text="Enter Source"
+        android:background="#55000000"
         android:inputType="textPersonName"
         android:onClick="OnClickEnterSource"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView3"
-        app:layout_constraintStart_toStartOf="@+id/destination_text" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/enter_dest_text_view" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:width="60dp"
+        android:textAlignment="center"
         android:layout_marginBottom="139dp"
-        android:layout_marginEnd="9dp"
-        android:text="enter source"
+        android:padding="5dp"
+        android:textSize="20dp"
+        android:background="#77000000"
+        android:text="SRC"
+        app:layout_constraintStart_toStartOf="@id/enter_dest_text_view"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/source_text" />
+        app:layout_constraintEnd_toEndOf="@+id/enter_dest_text_view" />
 
     <EditText
         android:id="@+id/destination_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="14"
+        android:focusable="false"
+        android:textSize="20dp"
+        android:padding="5dp"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="Enter Destination"
+        android:background="#55000000"
         android:visibility="invisible"
         android:onClick="OnClickEnterDestination"
-        app:layout_constraintStart_toEndOf="@+id/enter_dest_text_view"
+        app:layout_constraintStart_toEndOf="@id/enter_dest_text_view"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/confirm_source" />
 
     <TextView
         android:id="@+id/enter_dest_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="9dp"
-        android:text="enter destination"
+        android:width="60dp"
+        android:padding="5dp"
+        android:textAlignment="center"
+        android:background="#77000000"
+        android:textSize="20dp"
+        android:text="DEST"
         android:visibility="invisible"
         app:layout_constraintBaseline_toBaselineOf="@+id/destination_text"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/destination_text"/>
 
     <Button
         android:id="@+id/confirm_destination"
@@ -92,7 +113,8 @@
         android:text="Confirm Destination"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/destination_text" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </android.support.constraint.ConstraintLayout>
 
     <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
@@ -101,12 +123,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:theme="@style/AppTheme" />
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:background="?attr/colorPrimary"-->
+            <!--android:theme="@style/AppTheme" />-->
 
     </FrameLayout>
 
