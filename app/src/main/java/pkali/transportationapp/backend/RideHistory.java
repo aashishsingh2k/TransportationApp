@@ -2,6 +2,7 @@ package pkali.transportationapp.backend;
 
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ExpandableListView;
@@ -16,8 +17,11 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedList;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.google.gson.Gson;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,6 +38,8 @@ public class RideHistory extends AppCompatActivity {
     private MyExpandableListAdapter listAdapter;
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listHash;
+    private List<NamedLocation> locations;
+    private int latestGroup = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +55,19 @@ public class RideHistory extends AppCompatActivity {
 
         listView = (ExpandableListView) findViewById(R.id.expLV);
         initData();
-        listAdapter = new MyExpandableListAdapter(this, listDataHeader, listHash);
+        listAdapter = new MyExpandableListAdapter(this, listDataHeader, listHash, locations);
         listView.setAdapter(listAdapter);
+
+        listView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (latestGroup != -1 && groupPosition != latestGroup) {
+                    listView.collapseGroup(latestGroup);
+                }
+                latestGroup = groupPosition;
+            }
+        });
 
         Log.v("Ride History Activity:", "finished");
     }
@@ -58,6 +75,7 @@ public class RideHistory extends AppCompatActivity {
     private void initData() {
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
+        locations = new ArrayList<>();
 
         final AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AWSMobileClient.getInstance().getCredentialsProvider());
         Log.v("RIDE HISTORY CLIENT:", dynamoDBClient.toString());
@@ -66,10 +84,12 @@ public class RideHistory extends AppCompatActivity {
                 .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                 .build();
 
+        queryRides();
+    }
 
-        //final RideTableDO ridesItem = new RideTableDO();
-        PaginatedList<RideTableDO> result_copy;
-        new Thread(new Runnable() {
+    // populates listDataHeader, listHash, and locations by querying the database
+    public void queryRides() {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 RideTableDO ride_table = new RideTableDO();
@@ -82,46 +102,43 @@ public class RideHistory extends AppCompatActivity {
                         .withRangeKeyCondition("", rangeKeyCondition)
                         .withConsistentRead(false);
 
-//                String partitionKey = name;
-//                Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-//                eav.put(":val1", new AttributeValue().withS(partitionKey));
-//                DynamoDBQueryExpression<RideTableDO> qExp = new DynamoDBQueryExpression<RideTableDO>()
-//                        .withKeyConditionExpression("userId = :val1").withExpressionAttributeValues(eav);
-
                 DynamoDBQueryExpression<RideTableDO> q = new DynamoDBQueryExpression<RideTableDO>()
                         .withHashKeyValues(ride_table);
 
                 PaginatedList<RideTableDO> result = dynamoDBMapper.query(RideTableDO.class, q);
                 Gson gson = new Gson();
-                StringBuilder stringBuilder = new StringBuilder();
+                String stringBuilder = "";
 
 
 
                 // Loop through query results
                 for (int i = 0; i < result.size(); i++) {
-                    String jsonFormOfItem = "From: (" + gson.toJson(result.get(i).getSrcLat()) + ", " + gson.toJson(result.get(i).getSrcLon() + ")\n");
-                    jsonFormOfItem += "To: (" + gson.toJson(result.get(i).getDstLat()) + ", " + gson.toJson(result.get(i).getDstLon()) + ")\n\n";
-                    stringBuilder.append(jsonFormOfItem);
-                    //listDataHeader.add(result.get(i).getDate());
-                    listDataHeader.add(result.get(i).getDate());
+                    //String jsonFormOfItem = gson.toJson(result.get(i));
+                    String jsonFormOfItem = "From: " + result.get(i).getSrcAddr() + "\n\n";
+                    jsonFormOfItem += "To: " + result.get(i).getDstAddr() + "\n\n\n";
+                    Log.v("SRC:","src is" +  result.get(i).getSrcAddr());
+                    stringBuilder += jsonFormOfItem;
+                    Date d = new Date(result.get(i).getTimestamp());
+                    String[] header = d.toString().split("00:00");
+                    listDataHeader.add(header[0].substring(0, header[0].length()-1) + header[1]);
 
+
+                    LatLng srcCoord = new LatLng(result.get(i).getSrcLat(), result.get(i).getSrcLon());
+                    LatLng dstCoord = new LatLng(result.get(i).getDstLat(), result.get(i).getDstLon());
+                    Log.v("NAMEDLOCATION:", result.get(i).getSrcLat().toString() + ", " + result.get(i).getSrcLon().toString());
+                    NamedLocation curr = new NamedLocation(result.get(i).getSrcAddr(), srcCoord, result.get(i).getDstAddr(), dstCoord);
+                    locations.add(curr);
                 }
-/*
-                for (int i = 0; i < result.size(); i++) {
-                    List<String> values = new ArrayList<>();
-                    values.add(gson.toJson(result.get(i)));
-                    listHash.put(listDataHeader.get(i), values);
+
+                if (result.size() < 1) {
+                    return;
                 }
-*/
-                String resString = stringBuilder.toString();
-                String[] split = resString.split("\n\n");
+
+                String resString = stringBuilder;//.toString();
+                String[] split = resString.split("\n\n\n");
                 Log.v("split length", Integer.toString(split.length));
                 Log.v("RESULT:", resString);
                 Log.v("Query result: ", stringBuilder.toString());
-
-                for (int i = 0; i < split.length; i++) {
-                    //listDataHeader.add(Integer.toString(i));
-                }
                 for (int i = 0; i < split.length; i++) {
                     List<String> values = new ArrayList<>();
                     Log.v("Split[i]", split[i]);
@@ -131,7 +148,6 @@ public class RideHistory extends AppCompatActivity {
 
                 // Add your code here to deal with the data result
 
-
                 if (result.isEmpty()) {
                     // There were no items matching your query.
                     Log.v("Query result: ", "EMPTY");
@@ -139,32 +155,10 @@ public class RideHistory extends AppCompatActivity {
 
                 // Loop through query results
             }
-        }).start();
-
-        /*
-        listDataHeader.add("exp");
-        listDataHeader.add("poo");
-
-
-        List<String> exp = new ArrayList<>();
-        exp.add("This is Expandable ListView");
-
-        List<String> poo = new ArrayList<>();
-        poo.add("1");
-        poo.add("2");
-        poo.add("3");
-        poo.add("4");
-        listHash.put(listDataHeader.get(0), exp);
-        listHash.put(listDataHeader.get(1), poo);
-        */
+        });
+        t.start();
         try {
-            wait(10000);
-        } catch (Exception e) {
-
-        }
-       for (int i = 0; i < listDataHeader.size(); i++) {
-           Log.v("DATAHEADER:", listDataHeader.get(i));
-           Log.v("HASHMAP", listHash.get(listDataHeader.get(i)).get(0));
-       }
+            t.join();
+        } catch (InterruptedException e) {}
     }
 }

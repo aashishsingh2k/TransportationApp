@@ -65,6 +65,7 @@ import pkali.transportationapp.Price.PriceActivity;
 import pkali.transportationapp.R;
 import pkali.transportationapp.backend.RideHistory;
 import pkali.transportationapp.backend.RideTableDO;
+import pkali.transportationapp.LoginAndMenu.SettingsActivity;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -178,7 +179,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                         // For example, swap UI fragments here
                         if(menuItem.getItemId() == R.id.sign_out){
                             OnClickSignOut();
-                        } else {
+                        } else if (menuItem.getItemId() == R.id.settings) {
+                            onClickSettings();
+                        }
+                        else {
                             onClickQuery();
                         }
 
@@ -733,6 +737,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         ridesItem.setSrcLon(lonSrc);
         ridesItem.setDstLat(latDest);
         ridesItem.setDstLon(lonDest);
+        ridesItem.setSrcAddr(firstAdd);
+        ridesItem.setDstAddr(tgtAdd);
 
         Log.v("HI", "HELLO WORLD");
 
@@ -755,9 +761,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         c.signOut();
 
-        Intent it = new Intent(this, AuthenticatorActivity.class);
-
-        startActivityForResult(it, FormActivity_ID);
+        Intent i = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
 
     }
 
@@ -768,5 +775,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         /* Redirect to Ride History Activity */
         Intent rideHist = new Intent(this, RideHistory.class);
         startActivityForResult(rideHist, FormActivity_RideID);
+    }
+
+    //redirect to settings activity where user can edit account settings
+    public void onClickSettings() {
+
+        /* Redirect to Settings Activity */
+        Intent settings = new Intent(this, SettingsActivity.class);
+        startActivity(settings);
     }
 }

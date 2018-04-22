@@ -10,8 +10,22 @@
     android:paddingRight="16dp"
     tools:context="pkali.transportationapp.backend.RideHistory">
 
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ride History"
+        android:textSize = "30dp"
+        android:gravity="top|center_horizontal"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
+
     <ExpandableListView
         android:id="@+id/expLV"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        />
+
 </RelativeLayout>

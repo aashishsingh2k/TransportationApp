@@ -19,7 +19,7 @@
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
             android:name=".LoginAndMenu.AuthenticatorActivity"
-            android:label="@string/app_name"
+            android:label=  "@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,12 +41,12 @@
         <!-- AIzaSyDZdc-eHMXyI4dFkHX_UWtEzmxtrxgtsJk -->
         <!-- AIzaSyBG57qk1lkvewRUfAp2nrTtECZJfWzstRk -->
         <activity android:name=".Maps.MapsMarkerActivity" />
-        <activity android:name=".Maps.MapsActivityCurrentPlace">
-            >
-        </activity>
+        <activity android:name=".Maps.MapsActivityCurrentPlace"/>
         <activity android:name=".Price.PublicTransitActivity" />
         <activity android:name=".Price.PriceSortActivity" />
         <activity android:name=".Price.ETASortActivity"></activity>
+        <activity android:name=".backend.RideHistory" />
+        <activity android:name=".LoginAndMenu.SettingsActivity" />
     </application>
 
 </manifest>

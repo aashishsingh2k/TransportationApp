@@ -2,8 +2,14 @@ package pkali.transportationapp.backend;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @DynamoDBTable(tableName = "transportationappv-mobilehub-2063038980-RideTable")
 
@@ -11,8 +17,10 @@ public class RideTableDO {
     private String _userId;
     private Long _timestamp;
     private String _date;
+    private String _dstAddr;
     private Double _dstLat;
     private Double _dstLon;
+    private String _srcAddr;
     private Double _srcLat;
     private Double _srcLon;
 
@@ -42,6 +50,14 @@ public class RideTableDO {
     public void setDate(final String _date) {
         this._date = _date;
     }
+    @DynamoDBAttribute(attributeName = "dst_addr")
+    public String getDstAddr() {
+        return _dstAddr;
+    }
+
+    public void setDstAddr(final String _dstAddr) {
+        this._dstAddr = _dstAddr;
+    }
     @DynamoDBAttribute(attributeName = "dst_lat")
     public Double getDstLat() {
         return _dstLat;
@@ -57,6 +73,14 @@ public class RideTableDO {
 
     public void setDstLon(final Double _dstLon) {
         this._dstLon = _dstLon;
+    }
+    @DynamoDBAttribute(attributeName = "src_addr")
+    public String getSrcAddr() {
+        return _srcAddr;
+    }
+
+    public void setSrcAddr(final String _srcAddr) {
+        this._srcAddr = _srcAddr;
     }
     @DynamoDBAttribute(attributeName = "src_lat")
     public Double getSrcLat() {
