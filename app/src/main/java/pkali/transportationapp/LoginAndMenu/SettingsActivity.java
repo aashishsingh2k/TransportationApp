@@ -1,11 +1,14 @@
 package pkali.transportationapp.LoginAndMenu;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.amazonaws.mobile.config.AWSConfiguration;
@@ -65,15 +68,43 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         if (deleted) {
-            //Toast t = Toast.makeText(getParent().getApplicationContext(), "Account Successfully Deleted\nHope you come back soon!", Toast.LENGTH_LONG);
-           // t.show();
+            Log.v("DELETE", "SUCCESSFULLY DELETED");
+            Intent i = new Intent(this, DeleteActivity.class);
+            startActivity(i);
         } else {
-            Toast t = Toast.makeText(getParent().getApplicationContext(), "Failed to delete account\nPlease contact customer support", Toast.LENGTH_LONG);
+            Log.v("DELETE", "FAILED TO DELETE");
+            Toast t = Toast.makeText(getApplicationContext(), "Failed to delete account\nPlease contact customer support", Toast.LENGTH_LONG);
             t.show();
         }
+    }
 
-        Intent i = new Intent(this, AuthenticatorActivity.class);
-        // i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+    public void onClickChangePassword(View v) {
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("Change Password");
+        alert.setMessage("Enter old password");
+
+        // Set an EditText view to get user input
+        final EditText old = new EditText(this);
+        alert.setView(old);
+
+        String oldPassword = "";
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+               // oldPassword = dialog.toString();
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+
+
     }
 }

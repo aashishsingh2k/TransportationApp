@@ -118,7 +118,7 @@ public class RideHistory extends AppCompatActivity {
                     jsonFormOfItem += "To: " + result.get(i).getDstAddr() + "\n\n\n";
                     Log.v("SRC:","src is" +  result.get(i).getSrcAddr());
                     stringBuilder += jsonFormOfItem;
-                    Date d = new Date(result.get(i).getTimestamp());
+                    Date d = new Date(-1*result.get(i).getTimestamp());
                     String[] header = d.toString().split("00:00");
                     listDataHeader.add(header[0].substring(0, header[0].length()-1) + header[1]);
 

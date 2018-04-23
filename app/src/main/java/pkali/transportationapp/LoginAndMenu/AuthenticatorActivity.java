@@ -31,8 +31,9 @@ public class AuthenticatorActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_authenticator);
         setContentView(R.layout.activity_main);
 
+
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+       //setSupportActionBar(toolbar);
 
         /*FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +52,7 @@ public class AuthenticatorActivity extends AppCompatActivity {
                         new AuthUIConfiguration.Builder()
                                 .userPools(true)  // true? show the Email and Password UI
                                 .logoResId(R.drawable.mylogo) // Change the logo
-                                .backgroundColor(Color.BLUE) // Change the backgroundColor
+                                .backgroundColor(Color.BLACK) // Change the backgroundColor
                                 .isBackgroundColorFullScreen(true) // Full screen backgroundColor the backgroundColor full screenff
                                 .fontFamily("sans-serif-light") // Apply sans-serif-light as the global font
                                 .canCancel(true)
@@ -59,7 +60,8 @@ public class AuthenticatorActivity extends AppCompatActivity {
 
 
                 SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(AuthenticatorActivity.this, SignInUI.class);
-                signin.login(AuthenticatorActivity.this, MapsActivityCurrentPlace.class).execute();
+                signin.login(AuthenticatorActivity.this, MapsActivityCurrentPlace.class).authUIConfiguration(config).execute();
+
 
             }
         }).execute();
