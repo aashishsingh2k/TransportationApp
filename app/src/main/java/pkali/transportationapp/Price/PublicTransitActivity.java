@@ -1,6 +1,7 @@
 package pkali.transportationapp.Price;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -52,6 +53,7 @@ public class PublicTransitActivity extends AppCompatActivity
         TextView tv = (TextView) findViewById(R.id.textView2);
 
         tv.setText(resultText);
+        tv.setBackgroundColor(Color.BLACK);
 
         // Get the SupportMapFragment and request notification
         // when the map is ready to be used.

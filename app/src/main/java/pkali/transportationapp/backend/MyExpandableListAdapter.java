@@ -196,7 +196,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
             mapViews.add(groupPosition, mapView);
             // MapsInitializer.initialize(context);
             // setMapLocation(maps.get(groupPosition), mapView);
-
             if (mapViews.get(groupPosition) != null) {
                 Log.d("MAPVIEW", "NONNULL MAP");
                 // Initialize the MapView
@@ -204,14 +203,12 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
                 //clicked.add(currIndex, true);
                 // Set the map ready callback to receive the GoogleMap object
                 mapViews.get(groupPosition).getMapAsync(this);
-
                 //setMapLocation(groupPosition);
                 //bindView(groupPosition);
             } else {
                 Log.d("MAPVIEW", "NULL MAP");
             }
         }
-
 */
         // setMapLocation(groupPosition);
         return view;
@@ -228,7 +225,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
         MapsInitializer.initialize(context);
 
         this.map = map;
-       // maps.add(currIndex, map);
+        // maps.add(currIndex, map);
         setMapLocation(currIndex);
 //        for (int i = 0; i < clicked.size(); i++) {
 //            if (clicked.get(i)) {
@@ -240,7 +237,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
     }
 
     /**
-     * Displays a {@link LiteListDemoActivity.NamedLocation} on a
+     * Displays a {} on a
      * {@link GoogleMap}.
      * Adds a marker and centers the camera on the NamedLocation with the normal map type.
      */
