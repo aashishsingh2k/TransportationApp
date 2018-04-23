@@ -1,6 +1,7 @@
 package pkali.transportationapp.Price;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -181,6 +182,7 @@ public class PriceActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("NewApi")
     public void buildETASort() {
         rideOptions.sort(MY_ORDER_2);
         Iterator i = rideOptions.iterator();
@@ -640,6 +642,7 @@ public class PriceActivity extends AppCompatActivity {
             Intent i = new Intent(this, PublicTransitActivity.class);
             i.putExtra("Source", src);
             i.putExtra("Destination", dest);
+            i.putExtra("Result", PublicTransport.getEndLocationTitle(result));
             startActivity(i);
         } catch(Exception e){
             //transit.setText("Oops! no public transport available at that destination!");
