@@ -1,77 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:lyft="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:uber="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layout_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="pkali.transportationapp.Price.PriceActivity"
-    tools:layout_editor_absoluteY="81dp">
 
-    <include layout="@layout/my_video_background" />
-    <Button
-        android:id="@+id/transit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="39dp"
-        android:onClick="OnClickTransit"
-        android:text="Check out public transport for cheaper than car pools"
-        app:layout_constraintBottom_toTopOf="@+id/spinner"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/src_dest_text" />
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/container_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/gridViewPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="18"
+            xmlns:lyft="http://schemas.android.com/apk/res-auto"
+            tools:context="pkali.transportationapp.Price.PriceActivity">
 
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
-        android:layout_marginEnd="73dp"
-        android:visibility="visible"
-        android:backgroundTint="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/button_done"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/transit" />
+            <com.lyft.lyftbutton.LyftButton
+                android:id="@+id/lyft_button_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                lyft:lyftStyle="lyftMulberryDark" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="19dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginStart="52dp"
-        android:text="Sort by:"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/button_done"
-        app:layout_constraintEnd_toStartOf="@+id/spinner"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/spinner"
-        android:textColor="@color/white"/>
+            <com.lyft.lyftbutton.LyftButton
+                android:id="@+id/lyft_button_classic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
 
-    <Button
-        android:id="@+id/button_done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="96dp"
-        android:layout_marginStart="26dp"
-        android:onClick="onStartButtonClick"
-        android:text="Done"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+                lyft:lyftStyle="lyftMulberryDark" />
 
-    <TextView
-        android:id="@+id/src_dest_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="133dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="28dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/transit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <com.lyft.lyftbutton.LyftButton
+                android:id="@+id/lyft_button_plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
 
-</android.support.constraint.ConstraintLayout>
+                lyft:lyftStyle="lyftMulberryDark" />
+
+            <TextView
+                android:id="@+id/instruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Please select sorting method from menu" />
+
+
+        </GridLayout>
+
+
+    </ScrollView>
+
