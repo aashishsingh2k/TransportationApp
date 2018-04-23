@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Locale;
 
 import pkali.transportationapp.LoginAndMenu.AuthenticatorActivity;
+import pkali.transportationapp.LoginAndMenu.SignOutActivity;
 import pkali.transportationapp.Price.PriceActivity;
 import pkali.transportationapp.R;
 import pkali.transportationapp.backend.RideHistory;
@@ -694,6 +695,40 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+                /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+                try {
+                    if (mLocationPermissionGranted) {
+                        Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                        locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Location> task) {
+                                if (task.isSuccessful() && task.getResult() != null) {
+                                    // Set the map's camera position to the current location of the device.
+                                    mLastKnownLocation = task.getResult();
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                            new LatLng(mLastKnownLocation.getLatitude(),
+                                                    mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+
+                                } else {
+                                    Log.d(TAG, "Current location is null. Using defaults.");
+                                    Log.e(TAG, "Exception: %s", task.getException());
+                                    mMap.moveCamera(CameraUpdateFactory
+                                            .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                                }
+                            }
+                        });
+                        showCurrentPlace();
+                    }
+                } catch (SecurityException e)  {
+                    Log.e("Exception: %s", e.getMessage());
+                }
+
+
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -731,7 +766,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         final RideTableDO ridesItem = new RideTableDO();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         ridesItem.setDate(timestamp.toString());
-        ridesItem.setTimestamp(timestamp.getTime());
+        ridesItem.setTimestamp(-1*timestamp.getTime());
         ridesItem.setUserId(name);
         ridesItem.setSrcLat(latSrc);
         ridesItem.setSrcLon(lonSrc);
@@ -761,16 +796,14 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         c.signOut();
 
-        Intent i = getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        Intent it = new Intent(this, SignOutActivity.class);
+
+        startActivity(it);
 
     }
 
     //queries ride history in backend and clicking this button shows the ride history
     public void onClickQuery() {
-        Log.v("ONCLICKQUERY: ", "CLICKED QUERY BUTTON");
 
         /* Redirect to Ride History Activity */
         Intent rideHist = new Intent(this, RideHistory.class);
