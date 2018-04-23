@@ -87,6 +87,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private Double lonSrc = 1.0;
     private Double latDest = 1.0;
     private Double lonDest = 1.0;
+    private boolean perm = true;
 
     // The entry points to the Places API.
     private GeoDataClient mGeoDataClient;
@@ -266,8 +267,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         });
 
         // Prompt the user for permission.
+
         getLocationPermission();
+
         showCurrentPlace();
+
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -331,6 +335,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
         } else {
+            perm = false;
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -351,10 +356,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
+                    updateLocationUI();
                 }
             }
         }
-        updateLocationUI();
+
     }
 
     /**
@@ -694,6 +700,36 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+                try {
+                    if (mLocationPermissionGranted) {
+                        Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                        locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Location> task) {
+                                if (task.isSuccessful() && task.getResult() != null) {
+                                    // Set the map's camera position to the current location of the device.
+                                    mLastKnownLocation = task.getResult();
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                            new LatLng(mLastKnownLocation.getLatitude(),
+                                                    mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+
+                                } else {
+                                    Log.d(TAG, "Current location is null. Using defaults.");
+                                    Log.e(TAG, "Exception: %s", task.getException());
+                                    mMap.moveCamera(CameraUpdateFactory
+                                            .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                                }
+                            }
+                        });
+
+                    }
+                } catch (SecurityException e)  {
+                    Log.e("Exception: %s", e.getMessage());
+                }
+                showCurrentPlace();
+
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -760,7 +796,6 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         CognitoUser c = cup.getCurrentUser();
 
         c.signOut();
-
         Intent i = getBaseContext().getPackageManager()
                 .getLaunchIntentForPackage( getBaseContext().getPackageName() );
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

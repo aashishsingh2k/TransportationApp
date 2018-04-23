@@ -92,7 +92,7 @@ public class PriceActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.option_menu, menu); //your file name
+        inflater.inflate(R.menu.option_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -176,6 +176,15 @@ public class PriceActivity extends AppCompatActivity {
                 GridLayout.spec(2, GridLayout.FILL),
                 GridLayout.spec(1, GridLayout.FILL)));*/
         //tv.setText("Source address: " + src + "; Destination Address: " + dest);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MenuItem mi = findViewById(R.id.menu_price);
+                onOptionsItemSelected(mi);
+            }
+        }, 2000);
+
 
 
     }
@@ -186,11 +195,11 @@ public class PriceActivity extends AppCompatActivity {
         Iterator i = rideOptions.iterator();
         int j = 0;
         GridLayout gridLayout = findViewById(R.id.gridViewPrice);
-        gridLayout.setRowCount(18);
-        gridLayout.setColumnCount(2);
+        gridLayout.setRowCount(13);
+        gridLayout.setColumnCount(1);
 
 
-        while(i.hasNext()) {
+        while(i.hasNext() && j < 13) {
 
             Ride r = (Ride) i.next();
             int lyftCount = 0;
@@ -207,8 +216,8 @@ public class PriceActivity extends AppCompatActivity {
                     LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button_line);
                     gridLayout.removeView(lyftButton);
                     gridLayout.addView(lyftButton, new GridLayout.LayoutParams(
-                            GridLayout.spec(j + 1, GridLayout.FILL),
-                            GridLayout.spec(1, GridLayout.FILL)));
+                            GridLayout.spec(j, GridLayout.FILL),
+                            GridLayout.spec(0, GridLayout.FILL)));
 
                     lyftButton.setVisibility(View.VISIBLE);
                     lyftButton.setApiConfig(apiConfig);
@@ -226,8 +235,8 @@ public class PriceActivity extends AppCompatActivity {
                     LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button_classic);
                     gridLayout.removeView(lyftButton);
                     gridLayout.addView(lyftButton, new GridLayout.LayoutParams(
-                            GridLayout.spec(j + 1, GridLayout.FILL),
-                            GridLayout.spec(1, GridLayout.FILL)));
+                            GridLayout.spec(j, GridLayout.FILL),
+                            GridLayout.spec(0, GridLayout.FILL)));
                     lyftButton.setVisibility(View.VISIBLE);
                     lyftButton.setApiConfig(apiConfig);
 
@@ -241,13 +250,13 @@ public class PriceActivity extends AppCompatActivity {
 
                     lyftButton.load();
                 }
-                else {
+                else if(productID.equals("lyft_plus")) {
 
                     LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button_plus);
                     gridLayout.removeView(lyftButton);
                     gridLayout.addView(lyftButton, new GridLayout.LayoutParams(
-                            GridLayout.spec(j - lyftCount + 1, GridLayout.FILL),
-                            GridLayout.spec(1, GridLayout.FILL)));
+                            GridLayout.spec(j, GridLayout.FILL),
+                            GridLayout.spec(0, GridLayout.FILL)));
                     lyftButton.setVisibility(View.VISIBLE);
                     lyftButton.setApiConfig(apiConfig);
 
@@ -283,8 +292,8 @@ public class PriceActivity extends AppCompatActivity {
                 RideRequestButton requestButton = new RideRequestButton(getApplicationContext());
                 // get your layout, for instance:
                 gridLayout.addView(requestButton, new GridLayout.LayoutParams(
-                        GridLayout.spec(j + 1, GridLayout.FILL),
-                        GridLayout.spec(1, GridLayout.FILL)));
+                        GridLayout.spec(j, GridLayout.FILL),
+                        GridLayout.spec(0, GridLayout.FILL)));
 
                 RideParameters rideParams = new RideParameters.Builder()
                         // Optional product_id from /v1/products endpoint (e.g. UberX). If not provided, most cost-efficient product will be used
@@ -308,13 +317,13 @@ public class PriceActivity extends AppCompatActivity {
     public void buildPriceSort() {
         Collections.sort(rideOptions, MY_ORDER_1);
         GridLayout gridLayout = findViewById(R.id.gridViewPrice);
-        gridLayout.setRowCount(18);
-        gridLayout.setColumnCount(2);
+        gridLayout.setRowCount(13);
+        gridLayout.setColumnCount(1);
         gridLayout.setRowOrderPreserved(true);
         gridLayout.setColumnOrderPreserved(true);
         int j = 0;
         Iterator<Ride> i = rideOptions.iterator();
-        while(i.hasNext()) {
+        while(i.hasNext() && j < 13) {
             Ride r = i.next();
             Log.v("car type is " + r.getName(), " price is " + r.getPrice());
             int lyftCount = 0;
@@ -331,8 +340,7 @@ public class PriceActivity extends AppCompatActivity {
                     gridLayout.removeView(lyftButton);
                     gridLayout.addView(lyftButton, new GridLayout.LayoutParams(
                             GridLayout.spec(j, GridLayout.FILL),
-                            //GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL),
-                            GridLayout.spec(1, GridLayout.FILL)));
+                            GridLayout.spec(0, GridLayout.FILL)));
                     Log.v("j value for" + r.getName() + " is ", "" + j);
                     lyftButton.setVisibility(View.VISIBLE);
                     lyftButton.setApiConfig(apiConfig);
@@ -352,8 +360,7 @@ public class PriceActivity extends AppCompatActivity {
 
                     gridLayout.addView(lyftButton, new GridLayout.LayoutParams(
                             GridLayout.spec(j, GridLayout.FILL),
-                            //GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL),
-                            GridLayout.spec(1, GridLayout.FILL)));
+                            GridLayout.spec(0, GridLayout.FILL)));
 
                     Log.v("j value for" + r.getName() + " is ", "" + j);
                     lyftButton.setVisibility(View.VISIBLE);
@@ -369,7 +376,7 @@ public class PriceActivity extends AppCompatActivity {
 
                     lyftButton.load();
                 }
-                else {
+                else if (productID.equals("lyft_plus")) {
 
                     LyftButton lyftButton = (LyftButton) findViewById(R.id.lyft_button_plus);
 
@@ -380,8 +387,7 @@ public class PriceActivity extends AppCompatActivity {
 
                         gridLayout.addView(lyftButton, new GridLayout.LayoutParams(
                                 GridLayout.spec(j, GridLayout.FILL),
-                                //GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL),
-                                GridLayout.spec(1, GridLayout.FILL)));
+                                GridLayout.spec(0, GridLayout.FILL)));
                         Log.v("j value for" + r.getName() + " is ", "" + j);
 
 
@@ -422,8 +428,7 @@ public class PriceActivity extends AppCompatActivity {
 
                 gridLayout.addView(requestButton, new GridLayout.LayoutParams(
                         GridLayout.spec(j, GridLayout.FILL),
-                        //GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL),
-                        GridLayout.spec(1, GridLayout.FILL)));
+                        GridLayout.spec(0, GridLayout.FILL)));
 
                 Log.v("j value for" + r.getName() + " is ", "" + j);
 
@@ -650,8 +655,15 @@ public class PriceActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
+        int x;
+        if(item == null) {
+            x = R.id.menu_price;
+        }
+        else {
+           x = item.getItemId();
+        }
 
-        switch (item.getItemId()) {
+        switch (x) {
 
             case R.id.menu_transit:
                 if(first) {
@@ -672,6 +684,7 @@ public class PriceActivity extends AppCompatActivity {
                     gridLayout.removeView(btn);
                     first = false;
                 }
+                //Log.v("id of menu_price is ", "" + findViewById(R.id.menu_price).getId());
                 buildPriceSort();
             default:
                 return super.onOptionsItemSelected(item);
