@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.maps.model.DirectionsResult;
 import com.google.android.gms.maps.model.LatLng;
 import android.location.Address;
+import com.google.android.gms.maps.model.MapStyleOptions;
 
 import java.util.List;
 
@@ -53,7 +54,6 @@ public class PublicTransitActivity extends AppCompatActivity
         TextView tv = (TextView) findViewById(R.id.textView2);
 
         tv.setText(resultText);
-        tv.setBackgroundColor(Color.BLACK);
 
         // Get the SupportMapFragment and request notification
         // when the map is ready to be used.
@@ -76,6 +76,8 @@ public class PublicTransitActivity extends AppCompatActivity
         // Add a marker in Sydney, Australia,
         // and move the map's camera to the same location.
         mMap = googleMap;
+
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
 
         try {
             DirectionsResult results = PublicTransport.getTransitResult(src, dest);
@@ -102,15 +104,22 @@ public class PublicTransitActivity extends AppCompatActivity
 
             LatLng srcLatLng = new LatLng(lst.get(0).getLatitude(), lst.get(0).getLongitude());
 
+            Log.v("Prasanna bef", srcLatLng.toString());
+
             List<Address> lstDest = geocoder.getFromLocationName(src,1);
 
             LatLng destLatLng = new LatLng(lstDest.get(0).getLatitude(), lstDest.get(0).getLongitude());
 
             LatLngBounds bnd = new LatLngBounds(srcLatLng, destLatLng);
 
-            mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(bnd.getCenter(), 19.0f));
+            mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(bnd.getCenter(), 15));
 
-//            Log.v("Prasanna", srcMarker.getPosition().toString() + destMarker.getPosition().toString());
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+//                    new LatLng(srcLatLng.latitude(),
+//                            mLastKnownLocation.getLongitude()), 15));
+
+
+            Log.v("Prasanna", Double.toString(srcLatLng.latitude) + Double.toString(srcLatLng.longitude));
 //
 //            List<Address> lst = geocoder.getFromLocationName(src,1);
 //            List<Address> lst2 = geocoder.getFromLocationName(dest,1);

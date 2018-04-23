@@ -24,8 +24,12 @@ import pkali.transportationapp.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    CognitoUser user;
-    boolean deleted = false;
+    private CognitoUser user;
+    private boolean deleted = false;
+    private boolean successChange = false;
+    private String oldPassword = "";
+    private String newPassword = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,11 +93,12 @@ public class SettingsActivity extends AppCompatActivity {
         final EditText old = new EditText(this);
         alert.setView(old);
 
-        String oldPassword = "";
 
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-               // oldPassword = dialog.toString();
+                oldPassword = old.getText().toString();
+                Log.v("OLDPASSWORD", oldPassword);
+                enterPassword();
             }
         });
 
@@ -105,6 +110,61 @@ public class SettingsActivity extends AppCompatActivity {
 
         alert.show();
 
+    }
+
+    public void enterPassword() {
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("Change Password");
+        alert.setMessage("Enter new password");
+
+        // Set an EditText view to get user input
+        final EditText newPass = new EditText(this);
+        alert.setView(newPass);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                newPassword = newPass.getText().toString();
+                Log.v("NEWPASSWORD", newPassword);
+                changePassword();
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+    }
+
+    public void changePassword() {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GenericHandler handler = new GenericHandler() {
+
+                    @Override
+                    public void onSuccess() {
+                        // Password change was successful!
+                        successChange = true;
+                    }
+
+                    @Override
+                    public void onFailure(Exception exception) {
+                        // Password change failed, probe exception for details
+                        successChange = false;
+                    }
+                };
+                user.changePassword(oldPassword, newPassword, handler);
+            }
+        });
+        t.start();
+        try {
+            t.join();
+        } catch (Exception e) {
+        }
 
     }
 }

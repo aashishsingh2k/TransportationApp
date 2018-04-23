@@ -111,15 +111,11 @@ public class DeleteActivity extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        //findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
         AWSConfiguration ac = new AWSConfiguration(getApplicationContext());
         CognitoUserPool cup = new CognitoUserPool(getApplicationContext(), ac);
         user = cup.getCurrentUser();
         user.signOut();
-        Intent i = getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+
     }
 
     @Override

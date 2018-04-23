@@ -5,29 +5,18 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
+
 
 import com.google.maps.model.DirectionsResult;
 import com.lyft.lyftbutton.LyftButton;
@@ -84,6 +73,7 @@ public class PriceActivity extends AppCompatActivity {
     private TextView btn;
     private GridLayout gridLayout;
     private boolean first = true;
+    private boolean isFirstTime = true;
 
     private String[] priceArr = new String[10];
     private static final Comparator<Ride> MY_ORDER_1 = new PriceActivity.myOrder1();
@@ -102,43 +92,7 @@ public class PriceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_price);
-        //VideoView videoview = (VideoView) findViewById(R.id.videoView);
-        //Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+ R.raw.myvideo);
-        //videoview.setVideoURI(uri);
-        //videoview.start();
-        /*Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.sortby_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                String selectedItem = parent.getItemAtPosition(position).toString();
-                if(selectedItem.equals("Price"))
-                {
-                    Intent i = new Intent(view.getContext(), PriceSortActivity.class);
-                    i.putExtra("current src", SrcAdd);
-                    i.putExtra("current dest", DestAdd);
-                    i.putExtra("LatDest", latitudeDest);
-                    i.putExtra("LonDest", longitudeDest);
-                    i.putExtra("LatSrc", latitudeSrc);
-                    i.putExtra("LonSrc", longitudeSrc);
-                    i.putExtra("priceArray", createPriceArray());
-                    startActivityForResult(i, mainActivity_ID);
-                }
-                else {
-                    onStartButtonClick(view);
-                }
-            } // to close the onItemSelected
-            public void onNothingSelected(AdapterView<?> parent)
-
-            {
-
-            }
-        });*/
 
         Intent i = getIntent();
         Double LatSrc = i.getDoubleExtra("LatSrc", 1);
@@ -157,26 +111,13 @@ public class PriceActivity extends AppCompatActivity {
         initializeLyft(LatDest, LonDest, LatSrc, LonSrc);
         initializeUber(LatDest, LonDest, LatSrc, LonSrc);
         priceArr = new String[rideOptions.size()];
-        gridLayout = (GridLayout) findViewById(R.id.gridViewPrice);
+        gridLayout = findViewById(R.id.gridViewPrice);
         gridLayout.setColumnCount(1);
 
         btn = (TextView) findViewById(R.id.instruction);
         btn.setTextSize(20);
         btn.setTextColor(Color.RED);
-        //GridLayout gridLayout = (GridLayout) findViewById(R.id.gridViewPrice);
-        /*gridLayout.setColumnCount(4);
-        gridLayout.removeView(spinner);
-        gridLayout.addView(spinner, new GridLayout.LayoutParams(
-                GridLayout.spec(1, GridLayout.FILL),
-                GridLayout.spec(1, GridLayout.FILL)));
 
-
-        TextView tv = (TextView) findViewById(R.id.transit);
-        gridLayout.removeView(tv);
-        gridLayout.addView(tv, new GridLayout.LayoutParams(
-                GridLayout.spec(2, GridLayout.FILL),
-                GridLayout.spec(1, GridLayout.FILL)));*/
-        //tv.setText("Source address: " + src + "; Destination Address: " + dest);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -190,9 +131,27 @@ public class PriceActivity extends AppCompatActivity {
 
     }
 
+    private void reinitialize(final String delayMessage) {
+        Context context = getApplicationContext();
+        CharSequence text = delayMessage;
+        int duration = Toast.LENGTH_LONG;
+        Toast delay = Toast.makeText(context, text, duration);
+        delay.show();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initializeLyft(latitudeDest, longitudeDest, latitudeSrc, longitudeSrc);
+                initializeUber(latitudeDest, longitudeDest, latitudeSrc, longitudeSrc);
+
+            }
+        }, 2500);
+    }
+
 
     @SuppressLint("NewApi")
     public void buildETASort() {
+        reinitialize("Finding rides...");
         rideOptions.sort(MY_ORDER_2);
         Iterator i = rideOptions.iterator();
         int j = 0;
@@ -208,6 +167,7 @@ public class PriceActivity extends AppCompatActivity {
 
             String productID = r.getProductId();
             String company = r.getCompany();
+            Log.v("car type is " + r.getName(), " ETA is " + r.getEta());
             if(company.equals("lyft")) {
                 final ApiConfig apiConfig = new ApiConfig.Builder()
                         .setClientId("JzHNYTU35r0S")
@@ -223,7 +183,7 @@ public class PriceActivity extends AppCompatActivity {
 
                     lyftButton.setVisibility(View.VISIBLE);
                     lyftButton.setApiConfig(apiConfig);
-
+                    Log.v("ETA j value for" + r.getName() + " is ", "" + j);
                     RideParams.Builder rideParamsBuilder = new RideParams.Builder()
                             .setPickupLocation(latitudeSrc, longitudeSrc) //4th st SF
                             .setDropoffLocation(latitudeDest, longitudeDest); //2900 N MacArthur Dr, Tracy, CA 95376
@@ -241,7 +201,7 @@ public class PriceActivity extends AppCompatActivity {
                             GridLayout.spec(0, GridLayout.FILL)));
                     lyftButton.setVisibility(View.VISIBLE);
                     lyftButton.setApiConfig(apiConfig);
-
+                    Log.v("ETA j value for" + r.getName() + " is ", "" + j);
                     RideParams.Builder rideParamsBuilder = new RideParams.Builder()
                             .setPickupLocation(latitudeSrc, longitudeSrc) //4th st SF
                             .setDropoffLocation(latitudeDest, longitudeDest); //2900 N MacArthur Dr, Tracy, CA 95376
@@ -261,7 +221,7 @@ public class PriceActivity extends AppCompatActivity {
                             GridLayout.spec(0, GridLayout.FILL)));
                     lyftButton.setVisibility(View.VISIBLE);
                     lyftButton.setApiConfig(apiConfig);
-
+                    Log.v("ETA j value for" + r.getName() + " is ", "" + j);
                     RideParams.Builder rideParamsBuilder = new RideParams.Builder()
                             .setPickupLocation(latitudeSrc, longitudeSrc) //4th st SF
                             .setDropoffLocation(latitudeDest, longitudeDest); //2900 N MacArthur Dr, Tracy, CA 95376
@@ -296,7 +256,7 @@ public class PriceActivity extends AppCompatActivity {
                 gridLayout.addView(requestButton, new GridLayout.LayoutParams(
                         GridLayout.spec(j, GridLayout.FILL),
                         GridLayout.spec(0, GridLayout.FILL)));
-
+                Log.v("ETA j value for" + r.getName() + " is ", "" + j);
                 RideParameters rideParams = new RideParameters.Builder()
                         // Optional product_id from /v1/products endpoint (e.g. UberX). If not provided, most cost-efficient product will be used
                         .setProductId(productID)
@@ -317,6 +277,10 @@ public class PriceActivity extends AppCompatActivity {
     }
 
     public void buildPriceSort() {
+        if(!isFirstTime) {
+            reinitialize("Finding rides...");
+        }
+        isFirstTime = false;
         Collections.sort(rideOptions, MY_ORDER_1);
         GridLayout gridLayout = findViewById(R.id.gridViewPrice);
         gridLayout.setRowCount(13);
@@ -467,37 +431,12 @@ public class PriceActivity extends AppCompatActivity {
 
         UberSdk.initialize(config);
 
-        // get the context by invoking ``getApplicationContext()``, ``getContext()``, ``getBaseContext()`` or ``this`` when in the activity class
-        //RideRequestButton requestButton = new RideRequestButton(getApplicationContext());
-        // get your layout, for instance:
-        //ConstraintLayout layout =  findViewById(R.id.layout_main);
-        //layout.addView(requestButton);
-
-//        RideParameters rideParams = new RideParameters.Builder()
-//                // Optional product_id from /v1/products endpoint (e.g. UberX). If not provided, most cost-efficient product will be used
-//                .setProductId("a1111c8c-c720-46c3-8534-2fcdd730040d")
-//                // Required for price estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of dropoff location
-//                .setDropoffLocation(
-//                        LatSrc, LatDest, src, src)
-//                // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
-//                .setPickupLocation(LonSrc, LonDest, dest, dest)
-//                .build();
-        /*.setDropoffLocation(
-                        LatDest, LonDest, dest, dest)
-                // Required for pickup estimates; lat (Double), lng (Double), nickname (String), formatted address (String) of pickup location
-                .setPickupLocation(LatSrc, LonSrc, src, src)
-                .build();*/
-        // set parameters for the RideRequestButton instance
-        //requestButton.setRideParameters(rideParams);
-
-        //Response<List<Product>> response = service.getProducts().execute();
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     ServerTokenSession session = new ServerTokenSession(config);
-                    //requestButton.setSession(session);
-                    //requestButton.loadRideInformation();
+
                     RidesService service = UberRidesApi.with(session).build().createService();
                     Response<PriceEstimatesResponse> priceResponse;
                     Response<TimeEstimatesResponse> timeResponse;
@@ -508,7 +447,6 @@ public class PriceActivity extends AppCompatActivity {
                     List<PriceEstimate> prices = priceResponse.body().getPrices();
                     int highEst, lowEst;
                     for (PriceEstimate p : prices) {
-                        Log.v("###################", p.getDisplayName() + p.getEstimate());
                         timeResponse = service.getPickupTimeEstimate((float) LatSrc, (float) LonSrc, p.getProductId()).execute();
                         if (!timeResponse.body().getTimes().isEmpty()) {
                             TimeEstimate rideEta = timeResponse.body().getTimes().get(0);
@@ -523,7 +461,6 @@ public class PriceActivity extends AppCompatActivity {
                                 lowEst = p.getLowEstimate() * 100;
                             }
                             rideOptions.add(new Ride("uber", p.getDisplayName(), p.getProductId(), p.getDistance(), p.getDuration(), highEst, lowEst, rideEta.getEstimate()));
-                            Log.v("&&&&&&&", rideOptions.size() + "");
                         }
                     }
                 } catch (IOException e) {
@@ -536,7 +473,6 @@ public class PriceActivity extends AppCompatActivity {
             t.join();
             for(Ride r : rideOptions) {
                 String s = r.getCompany() + ";" + r.getProductId() + ";" + r.getPrice();
-                Log.v("SEE THIS", s);
 
             }
         } catch (InterruptedException e) {
@@ -579,7 +515,6 @@ public class PriceActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<EtaEstimateResponse> call, Response<EtaEstimateResponse> response) {
                                     List<Eta> etaResult = response.body().eta_estimates;
-                                    Log.v("&&&&&&&", response.body().toString());
                                     int etaResultValue = 0;
                                     if (etaResult.get(0).eta_seconds != null) {
                                         etaResultValue = etaResult.get(0).eta_seconds;
@@ -588,7 +523,6 @@ public class PriceActivity extends AppCompatActivity {
                                             c.estimated_cost_cents_max,
                                             c.estimated_cost_cents_min,
                                             etaResultValue));
-                                    Log.v("&&&&&&&", rideOptions.size() + "");
                                 }
 
                                 @Override
@@ -610,7 +544,6 @@ public class PriceActivity extends AppCompatActivity {
 
             for(Ride r : rideOptions) {
                 String s = r.getCompany() + ";" + r.getProductId() + ";" + r.getPrice();
-                Log.v("SEE THIS", s);
 
             }
         } catch (InterruptedException e) {
@@ -618,39 +551,20 @@ public class PriceActivity extends AppCompatActivity {
         }
     }
 
-    /*public void OnClickTransit(View view){
-        DirectionsResult result = PublicTransport.getTransitResult(src, dest);
 
-        Button transit = findViewById(R.id.transit);
-
-        try {
-
-            Intent i = new Intent(this, PublicTransitActivity.class);
-            i.putExtra("Source", src);
-            i.putExtra("Destination", dest);
-            i.putExtra("Result", PublicTransport.getEndLocationTitle(result));
-            startActivity(i);
-        } catch(Exception e){
-            transit.setText("Oops! no public transport available at that destination!");
-            e.printStackTrace();
-        }
-    }*/
     public void getTransit(){
         DirectionsResult result = PublicTransport.getTransitResult(src, dest);
         Context context = getApplicationContext();
         CharSequence text = "No Public transportation found";
         int duration = Toast.LENGTH_LONG;
-        //Button transit = findViewById(R.id.transit);
         Toast transit = Toast.makeText(context, text, duration);
         try {
-            //transit.setText(PublicTransport.getEndLocationTitle(result));
             Intent i = new Intent(this, PublicTransitActivity.class);
             i.putExtra("Source", src);
             i.putExtra("Destination", dest);
             i.putExtra("Result", PublicTransport.getEndLocationTitle(result));
             startActivity(i);
         } catch(Exception e){
-            //transit.setText("Oops! no public transport available at that destination!");
             transit.show();
             e.printStackTrace();
         }
@@ -668,31 +582,31 @@ public class PriceActivity extends AppCompatActivity {
         }
 
         switch (x) {
-
-            case R.id.menu_transit:
-                if(first) {
-                    gridLayout.removeView(btn);
-                    first = false;
-                }
-                getTransit();
-
             case R.id.menu_ETA:
                 if(first) {
                     gridLayout.removeView(btn);
                     first = false;
                 }
                 buildETASort();
-
+                return true;
+            case R.id.menu_transit:
+                if(first) {
+                    gridLayout.removeView(btn);
+                    first = false;
+                }
+                getTransit();
+                return true;
             case R.id.menu_price:
                 if(first) {
                     gridLayout.removeView(btn);
                     first = false;
                 }
-                //Log.v("id of menu_price is ", "" + findViewById(R.id.menu_price).getId());
                 buildPriceSort();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+
     }
 
 

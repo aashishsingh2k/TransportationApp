@@ -1,5 +1,6 @@
 package pkali.transportationapp.Maps;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -7,6 +8,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.config.AWSConfiguration;
@@ -61,6 +64,7 @@ import java.util.List;
 import java.util.Locale;
 
 import pkali.transportationapp.LoginAndMenu.AuthenticatorActivity;
+import pkali.transportationapp.LoginAndMenu.SignOutActivity;
 import pkali.transportationapp.Price.PriceActivity;
 import pkali.transportationapp.R;
 import pkali.transportationapp.backend.RideHistory;
@@ -82,7 +86,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private String firstAdd = "Resolving";
     private boolean allowDest = false;
     private int counter = 0;
-    private String tgtAdd = "tgt address not yet entered!";
+    private String tgtAdd = "not yet entered!";
     private Double latSrc = 1.0;
     private Double lonSrc = 1.0;
     private Double latDest = 1.0;
@@ -352,10 +356,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
+                    updateLocationUI();
                 }
             }
         }
-        updateLocationUI();
+
     }
 
     /**
@@ -455,54 +460,12 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
     }
 
-    /**
-     * Displays a form allowing the user to select a place from a list of likely places.
-     */
-//    private void openPlacesDialog() {
-//        // Ask the user to choose the place where they are now.
-//        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                // The "which" argument contains the position of the selected item.
-//                if(which == mLikelyPlaceNames.length - 1) {
-//                    mLikelyPlaceNames[which] = firstAdd;
-//                }
-//                LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-//                String markerSnippet = mLikelyPlaceAddresses[which];
-//                if (mLikelyPlaceAttributions[which] != null) {
-//                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-//                }
-//
-//                // Add a marker for the selected place, with an info window
-//                // showing information about that place.
-//                m = mMap.addMarker(new MarkerOptions()
-//                        .title(mLikelyPlaceNames[which])
-//                        .position(markerLatLng)
-//                        .snippet(markerSnippet).draggable(true));
-//
-//                currAdd = mLikelyPlaceNames[which];
-//                dragHelper();
-//                // Position the map's camera at the location of the marker.
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-//                        DEFAULT_ZOOM));
-//            }
-//        };
-//
-//        // Display the dialog.
-//        AlertDialog dialog = new AlertDialog.Builder(this)
-//                .setTitle(R.string.pick_place)
-//                .setItems(mLikelyPlaceNames, listener)
-//                .show();
-//    }
+
 
     private void setMarkerAtCurrentPlace() {
                 // The "which" argument contains the position of the selected item.
 
                 LatLng markerLatLng = mLikelyPlaceLatLngs[0];
-                //String markerSnippet = mLikelyPlaceAddresses[0];
-//                if (mLikelyPlaceAttributions[0] != null) {
-//                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[0];
-//                }
 
                 // Add a marker for the selected place, with an info window
                 // showing information about that place.
@@ -695,6 +658,34 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                try {
+                    if (mLocationPermissionGranted) {
+                        Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                        locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Location> task) {
+                                if (task.isSuccessful() && task.getResult() != null) {
+                                    // Set the map's camera position to the current location of the device.
+                                    mLastKnownLocation = task.getResult();
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                            new LatLng(mLastKnownLocation.getLatitude(),
+                                                    mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+
+                                } else {
+                                    Log.d(TAG, "Current location is null. Using defaults.");
+                                    Log.e(TAG, "Exception: %s", task.getException());
+                                    mMap.moveCamera(CameraUpdateFactory
+                                            .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                                }
+                            }
+                        });
+                    }
+                } catch (SecurityException e)  {
+                    Log.e("Exception: %s", e.getMessage());
+                }
+                showCurrentPlace();
+
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -707,6 +698,22 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     }
 
     public void OnClickConfirmDestination(View view) {
+        if(tgtAdd == null || tgtAdd.equals("not yet entered!")) {
+            Context context = getApplicationContext();
+            CharSequence text = "Enter Destination!";
+            int duration = Toast.LENGTH_LONG;
+            Toast error = Toast.makeText(context, text, duration);
+            error.show();
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            }, 2000);
+            return;
+        }
         AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AWSMobileClient.getInstance().getCredentialsProvider());
         Log.v("CLIENT:", dynamoDBClient.toString());
         this.dynamoDBMapper = DynamoDBMapper.builder()
@@ -732,7 +739,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         final RideTableDO ridesItem = new RideTableDO();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         ridesItem.setDate(timestamp.toString());
-        ridesItem.setTimestamp(timestamp.getTime());
+        ridesItem.setTimestamp(-timestamp.getTime());
         ridesItem.setUserId(name);
         ridesItem.setSrcLat(latSrc);
         ridesItem.setSrcLon(lonSrc);
@@ -762,9 +769,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         c.signOut();
 
-        Intent i = getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent i = new Intent(this, SignOutActivity.class);
         startActivity(i);
 
     }

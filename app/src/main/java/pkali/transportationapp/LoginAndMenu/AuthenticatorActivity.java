@@ -21,8 +21,6 @@ import pkali.transportationapp.Maps.MapsActivityCurrentPlace;
 import pkali.transportationapp.R;
 
 public class AuthenticatorActivity extends AppCompatActivity {
-    public static final int mainActivity_ID = 1;
-    public static boolean signOut = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +31,7 @@ public class AuthenticatorActivity extends AppCompatActivity {
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-       //setSupportActionBar(toolbar);
 
-        /*FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
         AWSMobileClient.getInstance().initialize(this).execute();
         AWSMobileClient.getInstance().initialize(this, new AWSStartupHandler() {
@@ -52,7 +41,7 @@ public class AuthenticatorActivity extends AppCompatActivity {
                         new AuthUIConfiguration.Builder()
                                 .userPools(true)  // true? show the Email and Password UI
                                 .logoResId(R.drawable.logo) // Change the logo
-                                .backgroundColor(Color.BLACK) // Change the backgroundColor
+                                .backgroundColor(Color.WHITE) // Change the backgroundColor
                                 .isBackgroundColorFullScreen(true) // Full screen backgroundColor the backgroundColor full screenff
                                 .fontFamily("sans-serif-light") // Apply sans-serif-light as the global font
                                 .canCancel(true)
@@ -107,10 +96,5 @@ public class AuthenticatorActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void OnClickRegister1(View view) {
-        Intent i = new Intent(this, AuthenticatorActivity.class);
-
-
-    }
 
 }

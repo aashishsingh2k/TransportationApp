@@ -120,7 +120,7 @@ public class RideHistory extends AppCompatActivity {
                     stringBuilder += jsonFormOfItem;
                     Date d = new Date(-1*result.get(i).getTimestamp());
                     String[] header = d.toString().split("00:00");
-                    listDataHeader.add(header[0].substring(0, header[0].length()-1) + header[1]);
+                    listDataHeader.add(d.toString());
 
 
                     LatLng srcCoord = new LatLng(result.get(i).getSrcLat(), result.get(i).getSrcLon());

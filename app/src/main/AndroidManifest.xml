@@ -54,12 +54,6 @@
             android:name=".Price.PublicTransitActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".Price.PriceSortActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity
-            android:name=".Price.ETASortActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity
             android:name=".backend.RideHistory"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity

@@ -30,6 +30,8 @@ import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -112,7 +114,8 @@ public class PublicTransport {
         Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0]
                 .endLocation.lat,results.routes[0].legs[0].endLocation.lng))
                 .title(results.routes[0].legs[0].startAddress)
-                .snippet(getEndLocationTitle(results)));
+                .snippet(getEndLocationTitle(results))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
         List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
         mMap.addPolyline(new PolylineOptions().addAll(decodedPath));
@@ -158,10 +161,10 @@ public class PublicTransport {
     public static String getEndLocationTitle(DirectionsResult results){
         BasicConfigurator.configure();
         return "Trip Summary: "  + " Start Address: " +
-                results.routes[0].legs[0].startAddress + " End Address: " +
-                results.routes[0].legs[0].endAddress + " Time: " +
-                results.routes[0].legs[0].duration.humanReadable + " Distance :" +
-                results.routes[0].legs[0].distance.humanReadable + "" + results.routes[0].summary;
+                results.routes[0].legs[0].startAddress + "\n End Address: " +
+                results.routes[0].legs[0].endAddress + "\n Time: " +
+                results.routes[0].legs[0].duration.humanReadable + "\n Distance :" +
+                results.routes[0].legs[0].distance.humanReadable + "\n" + results.routes[0].summary;
         //+ " Nearby Bus station: " + getBusStation();
 
 //        try{
