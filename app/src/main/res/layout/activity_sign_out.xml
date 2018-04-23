@@ -15,9 +15,9 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:text="you have signed out successfully!"
+        android:text="you have signed out successfully! Restart app to sign back in."
         android:textColor="#33b5e5"
-        android:textSize="50sp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <!-- This FrameLayout insets its children based on system windows using
