@@ -332,10 +332,11 @@ public class PriceActivity extends AppCompatActivity {
         Button transit = findViewById(R.id.transit);
 
         try {
-            transit.setText(PublicTransport.getEndLocationTitle(result));
+
             Intent i = new Intent(this, PublicTransitActivity.class);
             i.putExtra("Source", src);
             i.putExtra("Destination", dest);
+            i.putExtra("Result", PublicTransport.getEndLocationTitle(result));
             startActivity(i);
         } catch(Exception e){
             transit.setText("Oops! no public transport available at that destination!");

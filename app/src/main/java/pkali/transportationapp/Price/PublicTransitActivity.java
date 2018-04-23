@@ -4,12 +4,20 @@ import android.content.Intent;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.model.DirectionsResult;
+import com.google.android.gms.maps.model.LatLng;
+import android.location.Address;
+
+import java.util.List;
 
 import pkali.transportationapp.R;
 
@@ -25,6 +33,7 @@ public class PublicTransitActivity extends AppCompatActivity
     Geocoder geocoder;
     private String src;
     private String dest;
+    private String resultText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +41,17 @@ public class PublicTransitActivity extends AppCompatActivity
         // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_public_transit);
 
+        geocoder = new Geocoder(this);
+
         Intent i  = getIntent();
 
         src = i.getStringExtra("Source");
         dest = i.getStringExtra("Destination");
+        resultText = i.getStringExtra("Result");
+
+        TextView tv = (TextView) findViewById(R.id.textView2);
+
+        tv.setText(resultText);
 
         // Get the SupportMapFragment and request notification
         // when the map is ready to be used.
@@ -79,6 +95,36 @@ public class PublicTransitActivity extends AppCompatActivity
 
                 }
             });
+
+            List<Address> lst = geocoder.getFromLocationName(src,1);
+
+            LatLng srcLatLng = new LatLng(lst.get(0).getLatitude(), lst.get(0).getLongitude());
+
+            List<Address> lstDest = geocoder.getFromLocationName(src,1);
+
+            LatLng destLatLng = new LatLng(lstDest.get(0).getLatitude(), lstDest.get(0).getLongitude());
+
+            LatLngBounds bnd = new LatLngBounds(srcLatLng, destLatLng);
+
+            mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(bnd.getCenter(), 19.0f));
+
+//            Log.v("Prasanna", srcMarker.getPosition().toString() + destMarker.getPosition().toString());
+//
+//            List<Address> lst = geocoder.getFromLocationName(src,1);
+//            List<Address> lst2 = geocoder.getFromLocationName(dest,1);
+//
+//            float latDiff = (float) Math.abs(lst.get(0).getLatitude() - lst2.get(0).getLatitude());
+//            float lonDiff = (float) Math.abs(lst.get(0).getLongitude() - lst2.get(0).getLongitude());
+//
+//            LatLngBounds bnd = new LatLngBounds(new LatLng(lst.get(0).getLatitude(),
+//                    lst.get(0).getLongitude()), new LatLng(lst2.get(0).getLatitude(),
+//                    lst2.get(0).getLongitude()));
+//
+//            Log.v("Prasanna",
+//                    Double.toString(lst2.get(0).getLatitude() + lst2.get(0).getLongitude()));
+//
+//            mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(bnd.getCenter(), 1.0f));
+
         } catch(Exception e){
 
         }

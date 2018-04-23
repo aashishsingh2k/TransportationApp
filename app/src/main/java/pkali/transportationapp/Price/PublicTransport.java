@@ -1,6 +1,11 @@
 package pkali.transportationapp.Price;
 
+import android.util.Log;
+
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -92,17 +97,31 @@ public class PublicTransport {
     }
 
     public static Marker addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
+        MarkerOptions srcMarker = new MarkerOptions().position(
+                new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0]
+                        .startLocation.lng)).title(results.routes[0].legs[0].startAddress);
+
         mMap.addMarker(new MarkerOptions().position(
                 new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0]
                         .startLocation.lng)).title(results.routes[0].legs[0].startAddress));
-        Marker m = mMap.addMarker(
-                new MarkerOptions().position(new LatLng(results.routes[0].legs[0]
-                        .endLocation.lat,results.routes[0].legs[0].endLocation.lng))
-                        .title(results.routes[0].legs[0].startAddress)
-                        .snippet(getEndLocationTitle(results)));
+
+        MarkerOptions destMarker = new MarkerOptions().position(new LatLng(results.routes[0].legs[0]
+                .endLocation.lat,results.routes[0].legs[0].endLocation.lng))
+                .title(results.routes[0].legs[0].startAddress)
+                .snippet(getEndLocationTitle(results));
+        Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0]
+                .endLocation.lat,results.routes[0].legs[0].endLocation.lng))
+                .title(results.routes[0].legs[0].startAddress)
+                .snippet(getEndLocationTitle(results)));
 
         List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
         mMap.addPolyline(new PolylineOptions().addAll(decodedPath));
+
+
+//        LatLngBounds bnd = new LatLngBounds(srcMarker.getPosition(), destMarker.getPosition());
+//        mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(bnd.getCenter(), 14.0f));
+//
+//        Log.v("Prasanna", srcMarker.getPosition().toString() + destMarker.getPosition().toString());
 
         return m;
     }
