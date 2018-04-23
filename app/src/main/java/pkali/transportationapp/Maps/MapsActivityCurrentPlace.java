@@ -45,8 +45,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -62,6 +65,7 @@ import pkali.transportationapp.Price.PriceActivity;
 import pkali.transportationapp.R;
 import pkali.transportationapp.backend.RideHistory;
 import pkali.transportationapp.backend.RideTableDO;
+import pkali.transportationapp.LoginAndMenu.SettingsActivity;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -175,7 +179,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                         // For example, swap UI fragments here
                         if(menuItem.getItemId() == R.id.sign_out){
                             OnClickSignOut();
-                        } else {
+                        } else if (menuItem.getItemId() == R.id.settings) {
+                            onClickSettings();
+                        }
+                        else {
                             onClickQuery();
                         }
 
@@ -230,6 +237,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     public void onMapReady(GoogleMap map) {
         mMap = map;
 
+        map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
+
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -249,8 +258,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 TextView title = ((TextView) infoWindow.findViewById(R.id.title));
                 title.setText(marker.getTitle());
 
-                TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
-                snippet.setText(marker.getSnippet());
+//                TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
+//                snippet.setText(marker.getSnippet());
 
                 return infoWindow;
             }
@@ -437,8 +446,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             // Add a default marker, because the user hasn't selected a place.
             mMap.addMarker(new MarkerOptions()
                     .title(getString(R.string.default_info_title))
-                    .position(mDefaultLocation)
-                    .snippet(getString(R.string.default_info_snippet)));
+                    .position(mDefaultLocation).draggable(true)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
             // Prompt the user for permission.
             getLocationPermission();
@@ -448,51 +457,51 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     /**
      * Displays a form allowing the user to select a place from a list of likely places.
      */
-    private void openPlacesDialog() {
-        // Ask the user to choose the place where they are now.
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // The "which" argument contains the position of the selected item.
-                if(which == mLikelyPlaceNames.length - 1) {
-                    mLikelyPlaceNames[which] = firstAdd;
-                }
-                LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-                String markerSnippet = mLikelyPlaceAddresses[which];
-                if (mLikelyPlaceAttributions[which] != null) {
-                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-                }
-
-                // Add a marker for the selected place, with an info window
-                // showing information about that place.
-                m = mMap.addMarker(new MarkerOptions()
-                        .title(mLikelyPlaceNames[which])
-                        .position(markerLatLng)
-                        .snippet(markerSnippet).draggable(true));
-
-                currAdd = mLikelyPlaceNames[which];
-                dragHelper();
-                // Position the map's camera at the location of the marker.
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-                        DEFAULT_ZOOM));
-            }
-        };
-
-        // Display the dialog.
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.pick_place)
-                .setItems(mLikelyPlaceNames, listener)
-                .show();
-    }
+//    private void openPlacesDialog() {
+//        // Ask the user to choose the place where they are now.
+//        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // The "which" argument contains the position of the selected item.
+//                if(which == mLikelyPlaceNames.length - 1) {
+//                    mLikelyPlaceNames[which] = firstAdd;
+//                }
+//                LatLng markerLatLng = mLikelyPlaceLatLngs[which];
+//                String markerSnippet = mLikelyPlaceAddresses[which];
+//                if (mLikelyPlaceAttributions[which] != null) {
+//                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
+//                }
+//
+//                // Add a marker for the selected place, with an info window
+//                // showing information about that place.
+//                m = mMap.addMarker(new MarkerOptions()
+//                        .title(mLikelyPlaceNames[which])
+//                        .position(markerLatLng)
+//                        .snippet(markerSnippet).draggable(true));
+//
+//                currAdd = mLikelyPlaceNames[which];
+//                dragHelper();
+//                // Position the map's camera at the location of the marker.
+//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
+//                        DEFAULT_ZOOM));
+//            }
+//        };
+//
+//        // Display the dialog.
+//        AlertDialog dialog = new AlertDialog.Builder(this)
+//                .setTitle(R.string.pick_place)
+//                .setItems(mLikelyPlaceNames, listener)
+//                .show();
+//    }
 
     private void setMarkerAtCurrentPlace() {
                 // The "which" argument contains the position of the selected item.
 
                 LatLng markerLatLng = mLikelyPlaceLatLngs[0];
-                String markerSnippet = mLikelyPlaceAddresses[0];
-                if (mLikelyPlaceAttributions[0] != null) {
-                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[0];
-                }
+                //String markerSnippet = mLikelyPlaceAddresses[0];
+//                if (mLikelyPlaceAttributions[0] != null) {
+//                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[0];
+//                }
 
                 // Add a marker for the selected place, with an info window
                 // showing information about that place.
@@ -500,7 +509,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             m = mMap.addMarker(new MarkerOptions()
                     .title(mLikelyPlaceNames[0])
                     .position(markerLatLng)
-                    .snippet(markerSnippet).draggable(true));
+                    .draggable(true));
             latSrc = m.getPosition().latitude;
             lonSrc = m.getPosition().longitude;
         }
@@ -542,16 +551,18 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 EditText sourceView = (EditText) findViewById(R.id.source_text);
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 if(m != null) {
+                    m.hideInfoWindow();
                     m.setPosition(place.getLatLng());
+                    m.setTitle(place.getAddress().toString());
                 }
                 else {
                     m = mMap.addMarker(new MarkerOptions()
-                            .title(getString(R.string.default_info_title))
-                            .position(mDefaultLocation)
-                            .snippet(getString(R.string.default_info_snippet)));
+                            .title(place.getAddress().toString())
+                            .position(place.getLatLng()));
                 }
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(m.getPosition(),
                         DEFAULT_ZOOM));
+                m.setTitle(place.getAddress().toString());
                 sourceView.setText(place.getAddress());
                 firstAdd = place.getAddress().toString();
                 latSrc = place.getLatLng().latitude;
@@ -569,7 +580,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 EditText destView = (EditText) findViewById(R.id.destination_text);
                 Place place = PlaceAutocomplete.getPlace(this, data);
+                m.hideInfoWindow();
                 m.setPosition(place.getLatLng());
+                m.setTitle(place.getAddress().toString());
+                //m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(m.getPosition(),
                         DEFAULT_ZOOM));
                 destView.setText(place.getAddress());
@@ -662,7 +676,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         tv1.setVisibility(View.VISIBLE);
         TextView tv2 = (TextView) findViewById(R.id.destination_text);
         tv2.setVisibility(View.VISIBLE);
+        tv2.setText("Enter Destination");
         bDest.setVisibility(View.VISIBLE);
+        //m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ma));
+        m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         allowDest = true;
     }
 
@@ -720,6 +737,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         ridesItem.setSrcLon(lonSrc);
         ridesItem.setDstLat(latDest);
         ridesItem.setDstLon(lonDest);
+        ridesItem.setSrcAddr(firstAdd);
+        ridesItem.setDstAddr(tgtAdd);
 
         Log.v("HI", "HELLO WORLD");
 
@@ -742,9 +761,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         c.signOut();
 
-        Intent it = new Intent(this, AuthenticatorActivity.class);
-
-        startActivityForResult(it, FormActivity_ID);
+        Intent i = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
 
     }
 
@@ -755,5 +775,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         /* Redirect to Ride History Activity */
         Intent rideHist = new Intent(this, RideHistory.class);
         startActivityForResult(rideHist, FormActivity_RideID);
+    }
+
+    //redirect to settings activity where user can edit account settings
+    public void onClickSettings() {
+
+        /* Redirect to Settings Activity */
+        Intent settings = new Intent(this, SettingsActivity.class);
+        startActivity(settings);
     }
 }

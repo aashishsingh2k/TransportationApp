@@ -6,16 +6,19 @@
     android:layout_height="match_parent"
     tools:context="pkali.transportationapp.LoginAndMenu.AuthenticatorActivity">
 
+
     <android.support.design.widget.AppBarLayout
+        android:backgroundTint="@color/uber_black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        >
 
         <android.support.v7.widget.Toolbar
+            android:backgroundTint="@color/uber_black"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>

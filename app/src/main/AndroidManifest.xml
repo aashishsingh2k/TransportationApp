@@ -16,11 +16,11 @@
         android:label="transportation app"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".LoginAndMenu.AuthenticatorActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label=  "@string/app_name"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +28,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginAndMenu.MainMenuActivity" />
-        <activity android:name=".Price.PriceActivity" />
+        <activity android:name=".Price.PriceActivity"
+            android:theme="@style/Theme.AppCompat"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -41,12 +42,12 @@
         <!-- AIzaSyDZdc-eHMXyI4dFkHX_UWtEzmxtrxgtsJk -->
         <!-- AIzaSyBG57qk1lkvewRUfAp2nrTtECZJfWzstRk -->
         <activity android:name=".Maps.MapsMarkerActivity" />
-        <activity android:name=".Maps.MapsActivityCurrentPlace">
-            >
-        </activity>
+        <activity android:name=".Maps.MapsActivityCurrentPlace"/>
         <activity android:name=".Price.PublicTransitActivity" />
         <activity android:name=".Price.PriceSortActivity" />
         <activity android:name=".Price.ETASortActivity"></activity>
+        <activity android:name=".backend.RideHistory" />
+        <activity android:name=".LoginAndMenu.SettingsActivity" />
     </application>
 
 </manifest>
