@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Locale;
 
 import pkali.transportationapp.LoginAndMenu.AuthenticatorActivity;
+import pkali.transportationapp.LoginAndMenu.SignOutActivity;
 import pkali.transportationapp.Price.PriceActivity;
 import pkali.transportationapp.R;
 import pkali.transportationapp.backend.RideHistory;
@@ -731,7 +732,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         final RideTableDO ridesItem = new RideTableDO();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         ridesItem.setDate(timestamp.toString());
-        ridesItem.setTimestamp(timestamp.getTime());
+        ridesItem.setTimestamp(-1*timestamp.getTime());
         ridesItem.setUserId(name);
         ridesItem.setSrcLat(latSrc);
         ridesItem.setSrcLon(lonSrc);
@@ -761,9 +762,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         c.signOut();
 
-        Intent i = getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent i = new Intent(this, SignOutActivity.class);
         startActivity(i);
 
     }

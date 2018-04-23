@@ -19,4 +19,8 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <string name="title_activity_etasort">ETASortActivity</string>
+    <string name="title_activity_signout">SignoutActivity</string>
+    <string name="title_activity_sign_out">SignOutActivity</string>
+
+    <string name="title_activity_delete">DeleteActivity</string>
 </resources>
